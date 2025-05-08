@@ -13,110 +13,40 @@ class LichHoc {
     private int soTiet;
     private String phong;
     private String giangVien;
-    private List<Integer> tuanHoc;
+    private String tuanHoc;
 
-    public String getMaMH() {
-        return maMH;
-    }
-
-    public void setMaMH(String maMH) {
+    public LichHoc(String maMH, String tenMH, String nhomTo, int soTinChi, String lop,
+                   int thu, int tietBatDau, int soTiet, String phong, String giangVien, String tuanHoc) {
         this.maMH = maMH;
-    }
-
-    public String getTenMH() {
-        return tenMH;
-    }
-
-    public void setTenMH(String tenMH) {
         this.tenMH = tenMH;
-    }
-
-    public String getNhomTo() {
-        return nhomTo;
-    }
-
-    public void setNhomTo(String nhomTo) {
         this.nhomTo = nhomTo;
-    }
-
-    public int getSoTinChi() {
-        return soTinChi;
-    }
-
-    public void setSoTinChi(int soTinChi) {
         this.soTinChi = soTinChi;
-    }
-
-    public String getLop() {
-        return lop;
-    }
-
-    public void setLop(String lop) {
         this.lop = lop;
-    }
-
-    public int getThu() {
-        return thu;
-    }
-
-    public void setThu(int thu) {
         this.thu = thu;
-    }
-
-    public int getTietBatDau() {
-        return tietBatDau;
-    }
-
-    public void setTietBatDau(int tietBatDau) {
         this.tietBatDau = tietBatDau;
-    }
-
-    public int getSoTiet() {
-        return soTiet;
-    }
-
-    public void setSoTiet(int soTiet) {
         this.soTiet = soTiet;
-    }
-
-    public String getPhong() {
-        return phong;
-    }
-
-    public void setPhong(String phong) {
         this.phong = phong;
-    }
-
-    public String getGiangVien() {
-        return giangVien;
-    }
-
-    public void setGiangVien(String giangVien) {
         this.giangVien = giangVien;
-    }
-
-    public List<Integer> getTuanHoc() {
-        return tuanHoc;
-    }
-
-    public void setTuanHoc(List<Integer> tuanHoc) {
         this.tuanHoc = tuanHoc;
     }
 
+    // Getter methods
+    public String getMaMH() { return maMH; }
+    public String getTenMH() { return tenMH; }
+    public String getNhomTo() { return nhomTo; }
+    public int getSoTinChi() { return soTinChi; }
+    public String getLop() { return lop; }
+    public int getThu() { return thu; }
+    public int getTietBatDau() { return tietBatDau; }
+    public int getSoTiet() { return soTiet; }
+    public String getPhong() { return phong; }
+    public String getGiangVien() { return giangVien; }
+    public String getTuanHoc() { return tuanHoc; }
+
     @Override
     public String toString() {
-        return "LichHoc{" +
-                "maMH='" + maMH + '\'' +
-                ", tenMH='" + tenMH + '\'' +
-                ", nhomTo='" + nhomTo + '\'' +
-                ", soTinChi=" + soTinChi +
-                ", lop='" + lop + '\'' +
-                ", thu=" + thu +
-                ", tietBatDau=" + tietBatDau +
-                ", soTiet=" + soTiet +
-                ", phong='" + phong + '\'' +
-                ", giangVien='" + giangVien + '\'' +
-                ", tuanHoc=" + tuanHoc +
-                '}';
+        return String.format("%s - %s\nPhòng: %s, Tiết %d-%d (%s)\nGV: %s | Nhóm: %s | Lớp: %s",
+                maMH, tenMH, phong, tietBatDau, tietBatDau + soTiet - 1,
+                TietHoc.getThoiGian(String.valueOf(tietBatDau)), giangVien, nhomTo, lop);
     }
 }
