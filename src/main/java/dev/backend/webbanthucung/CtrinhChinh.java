@@ -57,7 +57,7 @@ class CtrinhChinh {
     }
 
     public void xuLyTuan(String str) {
-        int dem = 0;
+        int dem = 1;
 
         for (char c : str.toCharArray()) {
             int soTuan;
