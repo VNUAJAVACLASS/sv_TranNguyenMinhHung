@@ -1,52 +1,49 @@
 package dev.backend.webbanthucung;
 
-import java.util.List;
-
-class LichHoc {
+public class LichHoc {
     private String maMH;
     private String tenMH;
-    private String nhomTo;
-    private int soTinChi;
-    private String lop;
-    private int thu;
-    private int tietBatDau;
-    private int soTiet;
+    private Thu thu;
+    private TietHoc tietBatDau;
     private String phong;
-    private String giangVien;
-    private String tuanHoc;
 
-    public LichHoc(String maMH, String tenMH, String nhomTo, int soTinChi, String lop,
-                   int thu, int tietBatDau, int soTiet, String phong, String giangVien, String tuanHoc) {
-        this.maMH = maMH;
-        this.tenMH = tenMH;
-        this.nhomTo = nhomTo;
-        this.soTinChi = soTinChi;
-        this.lop = lop;
-        this.thu = thu;
-        this.tietBatDau = tietBatDau;
-        this.soTiet = soTiet;
-        this.phong = phong;
-        this.giangVien = giangVien;
-        this.tuanHoc = tuanHoc;
+    public String getMaMH() {
+        return maMH;
     }
 
-    // Getter methods
-    public String getMaMH() { return maMH; }
-    public String getTenMH() { return tenMH; }
-    public String getNhomTo() { return nhomTo; }
-    public int getSoTinChi() { return soTinChi; }
-    public String getLop() { return lop; }
-    public int getThu() { return thu; }
-    public int getTietBatDau() { return tietBatDau; }
-    public int getSoTiet() { return soTiet; }
-    public String getPhong() { return phong; }
-    public String getGiangVien() { return giangVien; }
-    public String getTuanHoc() { return tuanHoc; }
+    public void setMaMH(String maMH) {
+        this.maMH = maMH;
+    }
 
-    @Override
-    public String toString() {
-        return String.format("%s - %s\nPhòng: %s, Tiết %d-%d (%s)\nGV: %s | Nhóm: %s | Lớp: %s",
-                maMH, tenMH, phong, tietBatDau, tietBatDau + soTiet - 1,
-                TietHoc.getThoiGian(String.valueOf(tietBatDau)), giangVien, nhomTo, lop);
+    public String getTenMH() {
+        return tenMH;
+    }
+
+    public void setTenMH(String tenMH) {
+        this.tenMH = tenMH;
+    }
+
+    public Thu getThu() {
+        return thu;
+    }
+
+    public void setThu(Thu thu) {
+        this.thu = thu;
+    }
+
+    public TietHoc getTietBatDau() {
+        return tietBatDau;
+    }
+
+    public void setTietBatDau(TietHoc tietBatDau) {
+        this.tietBatDau = tietBatDau;
+    }
+
+    public String getPhong() {
+        return phong;
+    }
+
+    public void setPhong(String phong) {
+        this.phong = phong;
     }
 }
