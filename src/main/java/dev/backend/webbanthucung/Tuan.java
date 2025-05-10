@@ -1,9 +1,7 @@
 package dev.backend.webbanthucung;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Tuan {
     private int soTuan;
@@ -11,10 +9,9 @@ public class Tuan {
 
     public Tuan(int soTuan) {
         this.soTuan = soTuan;
-        for (int i = 2; i < 9; i++) {
-            dsThu.add(new Thu(i));
-        }
     }
+
+    public void themThu(Thu thu) {dsThu.add(thu);}
 
     public int getSoTuan() {
         return soTuan;
