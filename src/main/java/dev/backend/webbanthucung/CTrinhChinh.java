@@ -34,10 +34,31 @@ public class CTrinhChinh {
 
             // Duyệt ngược về để tách chuỗi
             for (int i = cols.size() - 1; i > 0; i--) {
+                String maMH = cols.get(0).text();
+                String tenMH = cols.get(1).text();
+
                 String tuanStr = cols.get(cols.size() - 5).text();
                 String thuStr = cols.get(cols.size() - 10).text();
 
-                xuLyTuan(tuanStr, thuStr);
+                String tiet = cols.get(cols.size() - 9).text();
+                int soTiet =  Integer.parseInt(cols.get(cols.size() - 8).text());
+                String phong =  cols.get(cols.size() - 7).text();
+
+                TietHoc tietBatDau = TietHoc.fromTiet(tiet);
+
+
+                int soThu;
+                if (thuStr.equalsIgnoreCase("CN")) {
+                    soThu = 8;
+                }else{
+                    soThu = Integer.parseInt(thuStr);
+                }
+                Thu thu = new Thu(soThu);
+
+                LichHoc lich = new LichHoc(maMH, tenMH, thu, tietBatDau, soTiet, phong);
+
+                xuLyLichHoc(tuanStr, thuStr, lich);
+
             }
         }
     }
@@ -78,37 +99,97 @@ public class CTrinhChinh {
         }
     }
 
+    public void xuLyLichHoc(String tuanStr, String thuStr, LichHoc lichHoc) {
+        int soThu;
+        if (thuStr.equalsIgnoreCase("CN")) {
+            soThu = 8;
+        }else{
+            soThu = Integer.parseInt(thuStr);
+        }
+
+        Thu thu = new Thu(soThu);
+        thu.themLichHoc(lichHoc);
+
+        for(int i = 0; i < tuanStr.length(); i++) {
+            char c = tuanStr.charAt(i);
+            int soTuan = i + 1;
+
+            if(c != '-'){
+                Tuan tuan = new Tuan(soTuan);
+
+                boolean daCoTuan = false;
+                for(Tuan t:dsTuan){
+                    if(t.equals(tuan)){
+                        daCoTuan = true;
+
+                        boolean daCoThu = false;
+                        for(Thu thuCu: t.getDsThu()){
+                            if(thuCu.equals(thu)){
+                                thu.themLichHoc(lichHoc);
+                                daCoThu = true;
+                                break;
+                            }
+                        }
+
+                        if(!daCoThu){
+                            t.themThu(thu);
+                        }
+                        break;
+                    }
+                }
+
+                if(!daCoTuan){
+                    tuan.themThu(thu);
+                    themTuan(tuan);
+                }
+            }
+        }
+    }
+
     public void inTuan() {
         if (dsTuan.isEmpty()) {
             System.out.println("Chưa có tuần nào được thêm!");
             return;
         }
 
-        for (Tuan tuan : dsTuan) {
-            System.out.print("Tuần " + tuan.getSoTuan() + ": ");
+        // Sắp xếp theo số tuần tăng dần
+        List<Tuan> danhSachTuan = new ArrayList<>(dsTuan);
+        danhSachTuan.sort(Comparator.comparingInt(Tuan::getSoTuan));
+
+        for (Tuan tuan : danhSachTuan) {
+            System.out.println("Tuần " + tuan.getSoTuan() + ":");
 
             List<Thu> dsThu = tuan.getDsThu();
-            List<Integer> thuDaThem = new ArrayList<>();
+            dsThu.sort(Comparator.comparingInt(Thu::getThu)); // Sắp xếp thứ tăng dần
 
-            // Chỉ thêm thứ vào danh sách thuDaThem mà không cần kiểm tra LichHoc
             for (Thu thu : dsThu) {
-                thuDaThem.add(thu.getThu());  // Thêm thứ vào danh sách thuDaThem
-            }
+                System.out.println("  Thứ " + (thu.getThu() == 8 ? "CN" : thu.getThu()) + ":");
 
-            if (thuDaThem.isEmpty()) {
-                System.out.println("Chưa có thứ nào được thêm.");
-            } else {
-                System.out.println("Thứ " + thuDaThem);
+                List<LichHoc> dsLich = thu.getDsLichHoc();
+                dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+
+                for (LichHoc lich : dsLich) {
+                    int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
+                    int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
+
+                    System.out.println("    - " + lich.getTenMH() +
+                            " (" + lich.getMaMH() + "), Tiết " + tietBatDau +
+                            " -> " + tietKetThuc +
+                            ", Phòng: " + lich.getPhong());
+                }
+
             }
         }
     }
 
 
 
+
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
-        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
-//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");     chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb.html");
+//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
+        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");
+
 
         chinh.inTuan();
     }

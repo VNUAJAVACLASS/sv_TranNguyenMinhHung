@@ -5,12 +5,12 @@ public class LichHoc {
     private String tenMH;
     private Thu thu;
     private TietHoc tietBatDau;
-    private TietHoc soTiet;
+    private int soTiet;
     private String phong;
 
     public LichHoc() {}
 
-    public LichHoc(String maMH, String tenMH, Thu thu, TietHoc tietBatDau, TietHoc soTiet, String phong) {
+    public LichHoc(String maMH, String tenMH, Thu thu, TietHoc tietBatDau, int soTiet, String phong) {
         this.maMH = maMH;
         this.tenMH = tenMH;
         this.thu = thu;
@@ -65,11 +65,11 @@ public class LichHoc {
         this.phong = phong;
     }
 
-    public TietHoc getSoTiet() {
+    public int getSoTiet() {
         return soTiet;
     }
 
-    public void setSoTiet(TietHoc soTiet) {
+    public void setSoTiet(int soTiet) {
         this.soTiet = soTiet;
     }
 }
