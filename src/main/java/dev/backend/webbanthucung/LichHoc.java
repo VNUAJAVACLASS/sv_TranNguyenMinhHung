@@ -5,7 +5,25 @@ public class LichHoc {
     private String tenMH;
     private Thu thu;
     private TietHoc tietBatDau;
+    private TietHoc soTiet;
     private String phong;
+
+    public LichHoc() {}
+
+    public LichHoc(String maMH, String tenMH, Thu thu, TietHoc tietBatDau, TietHoc soTiet, String phong) {
+        this.maMH = maMH;
+        this.tenMH = tenMH;
+        this.thu = thu;
+        this.tietBatDau = tietBatDau;
+        this.soTiet = soTiet;
+        this.phong = phong;
+    }
+
+    @Override
+    public String toString() {
+        return "Thứ: "+ thu.getThu() + "Mã môn học: " + maMH + "Tên môn học: " + tenMH +
+                "Tiết bắt đầu: " + tietBatDau + "Số tiết: " + soTiet + "Phòng: " + phong + "\n";
+    }
 
     public String getMaMH() {
         return maMH;
@@ -45,5 +63,13 @@ public class LichHoc {
 
     public void setPhong(String phong) {
         this.phong = phong;
+    }
+
+    public TietHoc getSoTiet() {
+        return soTiet;
+    }
+
+    public void setSoTiet(TietHoc soTiet) {
+        this.soTiet = soTiet;
     }
 }

@@ -42,22 +42,6 @@ public class CTrinhChinh {
         }
     }
 
-    public void xuLyTuan(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            int soTuan = i + 1;
-
-            if (c != '-') {
-                Tuan tuan = new Tuan(soTuan);
-                if (!dsTuan.contains(tuan)) {
-                    themTuan(tuan);
-                } else {
-//                    System.out.println("Tuần " + soTuan + " đã tồn tại, bỏ qua.");
-                }
-            }
-        }
-    }
-
     public void xuLyTuan(String tuanStr, String thuStr) {
         int soThu;
         if (thuStr.equalsIgnoreCase("CN")) {
@@ -83,10 +67,10 @@ public class CTrinhChinh {
                 } else {
                     for(Tuan t:dsTuan){
                         if(t.equals(tuan)){
+                            //Kiểm tra thứ chưa có trong tuần
                             if (!t.getDsThu().contains(thu)) {
                                 t.themThu(thu);
                             }
-//                            break;
                         }
                     }
                 }
@@ -94,21 +78,7 @@ public class CTrinhChinh {
         }
     }
 
-
-
-
     public void inTuan() {
-        if (dsTuan.isEmpty()) {
-            System.out.println("Chua co tuan nao duoc them!");
-            return;
-        }
-
-        for(Tuan tuan : dsTuan) {
-            System.out.print(tuan.getSoTuan() + " ");
-        }
-    }
-
-    public void inTuan1() {
         if (dsTuan.isEmpty()) {
             System.out.println("Chưa có tuần nào được thêm!");
             return;
@@ -137,9 +107,9 @@ public class CTrinhChinh {
 
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
-//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
-        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");
+        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
+//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");     chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb.html");
 
-        chinh.inTuan1();
+        chinh.inTuan();
     }
 }
