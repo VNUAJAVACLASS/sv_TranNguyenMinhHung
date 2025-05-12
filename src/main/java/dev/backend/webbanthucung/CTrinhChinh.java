@@ -316,8 +316,8 @@ public class CTrinhChinh {
         CTrinhChinh chinh = new CTrinhChinh();
 
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
+//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_HaNgocQuyen.html");
 
-//        chinh.inTuan();
 
         Scanner sc = new Scanner(System.in);
 
