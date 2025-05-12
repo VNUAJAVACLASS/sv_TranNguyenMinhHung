@@ -13,13 +13,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class CTrinhChinh {
-    private Set<Tuan> dsTuan = new HashSet<>();
+    private Map<Integer, Tuan> dsTuan = new HashMap<>();
     private final LocalDate ngayBatDauHK2 = LocalDate.of(2025, 1, 13);
     private String maMHTG, tenMHTG; // Biến trung gian lưu thông tin môn học khi thiếu cột
 
-    public void themTuan(Tuan tuan) {
-        dsTuan.add(tuan);
-    }
 
     public void docFileHTML(String path) throws IOException {
         File file = new File(path);
@@ -30,32 +27,37 @@ public class CTrinhChinh {
 
         for (Element row : rows) {
             Elements cols = row.select("td");
-            if (cols.size() < 7) continue; // Bỏ qua dòng thiếu nhiều dữ liệu
+            // Điều chỉnh kích thước kiểm tra dựa trên cấu trúc bảng của bạn
+            // Giả định 11 cột là đầy đủ, 7 cột là thiếu nhiều dữ liệu
+            if (cols.size() < 7) continue;
 
-            String maMH = cols.get(0).text();
-            String tenMH = cols.get(1).text();
+            String maMH, tenMH;
 
+            if (cols.size() < 11) {
+                // Dòng bị thiếu mã MH hoặc tên MH: dùng dữ liệu lưu tạm
+                maMH = this.maMHTG;
+                tenMH = this.tenMHTG;
+            } else {
+                // Dòng đầy đủ: lưu lại thông tin mới
+                maMH = cols.get(0).text();
+                tenMH = cols.get(1).text();
+                this.maMHTG = maMH;
+                this.tenMHTG = tenMH;
+            }
+
+            // Cần điều chỉnh chỉ số cột dựa trên offset
             String thuStr = cols.get(cols.size() - 10).text();
             String tiet = cols.get(cols.size() - 9).text();
             int soTiet = Integer.parseInt(cols.get(cols.size() - 8).text());
             String phong = cols.get(cols.size() - 7).text();
             String tuanStr = cols.get(cols.size() - 5).text();
 
+
             int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
-            Thu thu = new Thu(soThu);
+            // Đối tượng Thu sẽ được tạo hoặc tìm trong hàm xuLyLichHoc
             TietHoc tietBatDau = TietHoc.fromTiet(tiet);
 
-            LichHoc lich;
-
-            if (cols.size() < 11) {
-                // Dòng bị thiếu mã MH hoặc tên MH: dùng dữ liệu lưu tạm
-                lich = new LichHoc(maMHTG, tenMHTG, thu, tietBatDau, soTiet, phong);
-            } else {
-                // Dòng đầy đủ: lưu lại thông tin mới
-                this.maMHTG = maMH;
-                this.tenMHTG = tenMH;
-                lich = new LichHoc(maMH, tenMH, thu, tietBatDau, soTiet, phong);
-            }
+            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong); // Thu sẽ được set sau
 
             xuLyLichHoc(tuanStr, soThu, lich);
         }
@@ -67,41 +69,34 @@ public class CTrinhChinh {
             if (c == '-') continue;
 
             int soTuan = i + 1;
-            Tuan tuan = new Tuan(soTuan);
-            boolean daCoTuan = false;
 
-            //Kiem tra xem tuan da co trong danh sach hay chua
-            for (Tuan t : dsTuan) {
-                if (t.equals(tuan)) {
-                    daCoTuan = true;
-                    boolean daCoThu = false;
+            // Kiểm tra xem tuần đã có trong HashMap chưa
+            Tuan tuanHienTai = dsTuan.get(soTuan);
 
-                    //Kiem tra xem thu da co trong tuan hay chua
-                    for (Thu thu : t.getDsThu()) {
-                        if (thu.getThu() == soThu) {
-                            thu.themLichHoc(lichHoc);
-                            daCoThu = true;
-                            break;
-                        }
-                    }
+            // Nếu tuần chưa tồn tại, tạo mới và thêm vào HashMap
+            if (tuanHienTai == null) {
+                tuanHienTai = new Tuan(soTuan);
+                dsTuan.put(soTuan, tuanHienTai);
+            }
 
-                    //Neu thu chua co, tao moi va them lich hoc
-                    if (!daCoThu) {
-                        Thu thuMoi = new Thu(soThu);
-                        thuMoi.themLichHoc(lichHoc);
-                        t.themThu(thuMoi);
-                    }
+            // Tìm hoặc tạo đối tượng Thu trong tuần hiện tại
+            Thu thuHienTai = null;
+            for (Thu thu : tuanHienTai.getDsThu()) {
+                if (thu.getThu() == soThu) {
+                    thuHienTai = thu;
                     break;
                 }
-
-                //Neu chua co tuan, tao moi tuan va them lich hoc
-                if (!daCoTuan) {
-                    Thu thuMoi = new Thu(soThu);
-                    thuMoi.themLichHoc(lichHoc);
-                    tuan.themThu(thuMoi);
-                    themTuan(tuan);
-                }
             }
+
+            // Nếu thứ chưa có, tạo mới và thêm vào danh sách các ngày trong tuần
+            if (thuHienTai == null) {
+                thuHienTai = new Thu(soThu);
+                tuanHienTai.themThu(thuHienTai);
+            }
+
+            // Thêm lịch học vào thứ hiện tại
+            lichHoc.setThu(thuHienTai);
+            thuHienTai.themLichHoc(lichHoc);
         }
     }
 
@@ -111,20 +106,22 @@ public class CTrinhChinh {
             return;
         }
 
-        List<Tuan> danhSachTuan = new ArrayList<>(dsTuan);
-        danhSachTuan.sort(Comparator.comparingInt(Tuan::getSoTuan));
+        // Lấy danh sách các số tuần (keys của HashMap) và sắp xếp
+        List<Integer> soTuanList = new ArrayList<>(dsTuan.keySet());
+        Collections.sort(soTuanList); // Sắp xếp theo số tuần tăng dần
 
-        for (Tuan tuan : danhSachTuan) {
+        for (Integer soTuan : soTuanList) {
+            Tuan tuan = dsTuan.get(soTuan); // Lấy đối tượng Tuan từ HashMap bằng số tuần
             System.out.println("Tuần " + tuan.getSoTuan() + ":");
 
-            List<Thu> dsThu = tuan.getDsThu();
+            List<Thu> dsThu = new ArrayList<>(tuan.getDsThu());
             dsThu.sort(Comparator.comparingInt(Thu::getThu));
 
             for (Thu thu : dsThu) {
                 System.out.println("  Thứ " + (thu.getThu() == 8 ? "CN" : thu.getThu()) + ":");
 
-                List<LichHoc> dsLich = thu.getDsLichHoc();
-                dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+                List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
+                dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
                 for (LichHoc lich : dsLich) {
                     int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
@@ -146,6 +143,7 @@ public class CTrinhChinh {
 
         if (soNgay < 0) {
             System.out.println("Kỳ học này chưa bắt đầu");
+            return;
         }
 
         int soTuanHienTai = (int) (soNgay / 7) + 1;
@@ -154,24 +152,33 @@ public class CTrinhChinh {
 
         System.out.println("Hôm nay là: " + homNay + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
 
-        //tìm tuần hiện tại
-        for (Tuan tuan : dsTuan) {
-            if (tuan.getSoTuan() == soTuanHienTai) {
-                for (Thu thu : tuan.getDsThu()) {
-                    if (thu.getThu() == soThu) {
-                        List<LichHoc> dsLich = thu.getDsLichHoc();
-                        dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+        // Sử dụng get() để truy cập trực tiếp tuần hiện tại
+        Tuan tuanHienTai = dsTuan.get(soTuanHienTai);
 
-                        for (LichHoc lich : dsLich) {
-                            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
-                            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
-                            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
-                                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
-                        }
-                        return;
-                    }
-                }
-            }
+        if (tuanHienTai == null) {
+            System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuanHienTai);
+            return;
+        }
+
+        // Tìm thứ trong tuần hiện tại
+        Optional<Thu> optionalThu = tuanHienTai.getDsThu().stream()
+                .filter(thu -> thu.getThu() == soThu)
+                .findFirst();
+
+        if (optionalThu.isEmpty()) {
+            System.out.println("Không có lịch học vào hôm nay.");
+            return;
+        }
+
+        Thu thuHomNay = optionalThu.get();
+        List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
+        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
+
+        for (LichHoc lich : dsLich) {
+            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
+            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
+            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
+                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
         }
     }
 
@@ -181,16 +188,14 @@ public class CTrinhChinh {
             return;
         }
 
-        Optional<Tuan> optionalTuan = dsTuan.stream()
-                .filter(t -> t.getSoTuan() == soTuan)
-                .findFirst();
+        // Sử dụng get() để truy cập trực tiếp tuần cần tìm
+        Tuan tuan = dsTuan.get(soTuan);
 
-        if (optionalTuan.isEmpty()) {
+        if (tuan == null) { // Kiểm tra xem tuần có tồn tại trong HashMap không
             System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuan);
             return;
         }
 
-        Tuan tuan = optionalTuan.get();
         System.out.println("Thời khóa biểu tuần " + soTuan + ":");
 
         List<Thu> dsThu = new ArrayList<>(tuan.getDsThu());
@@ -200,7 +205,7 @@ public class CTrinhChinh {
             System.out.println("  Thứ " + (thu.getThu() == 8 ? "CN" : thu.getThu()) + ":");
 
             List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
-            dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+            dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
             for (LichHoc lich : dsLich) {
                 int tietBD = Integer.parseInt(lich.getTietBatDau().getTiet());
@@ -209,8 +214,6 @@ public class CTrinhChinh {
                         "), Tiết " + tietBD + " -> " + tietKT + ", Phòng: " + lich.getPhong());
             }
         }
-
-
     }
 
     public void hienThiLichHocTheoTuanVaThu(int soTuan, int soThu) {
@@ -224,16 +227,15 @@ public class CTrinhChinh {
             return;
         }
 
-        Optional<Tuan> optionalTuan = dsTuan.stream()
-                .filter(t -> t.getSoTuan() == soTuan)
-                .findFirst();
+        // Sử dụng get() để truy cập trực tiếp tuần cần tìm
+        Tuan tuan = dsTuan.get(soTuan);
 
-        if (optionalTuan.isEmpty()) {
+        if (tuan == null) { // Kiểm tra xem tuần có tồn tại không
             System.out.println("Không có dữ liệu cho tuần " + soTuan);
             return;
         }
 
-        Tuan tuan = optionalTuan.get();
+        // Tìm thứ trong tuần
         Optional<Thu> optionalThu = tuan.getDsThu().stream()
                 .filter(thu -> thu.getThu() == soThu)
                 .findFirst();
@@ -245,7 +247,7 @@ public class CTrinhChinh {
 
         Thu thu = optionalThu.get();
         List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
-        dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
         System.out.println("Thời khóa biểu tuần " + soTuan + ", thứ " + (soThu == 8 ? "CN" : soThu) + ":");
 
@@ -274,9 +276,11 @@ public class CTrinhChinh {
 
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
+
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
 
 //        chinh.inTuan();
+
         Scanner sc = new Scanner(System.in);
 
         System.out.println("\n1. Lịch học hôm nay:");
@@ -294,12 +298,14 @@ public class CTrinhChinh {
         System.out.println("\n3. Xem thời khóa biểu theo tuần, thứ:");
         System.out.print("Nhập tuần: ");
         int soTuan1 = sc.nextInt();
-        System.out.print("Nhập thứ: ");
+        System.out.print("Nhập thứ (2-7 hoặc 8 cho CN): ");
         int soThu = sc.nextInt();
         chinh.hienThiLichHocTheoTuanVaThu(soTuan1, soThu);
 
         System.out.println("\n===================================================");
         System.out.println("\n4. Xem thời khóa biểu theo ngày:");
-        System.out.print("Nhập ngày: ");
+        System.out.print("Nhập ngày (dd/MM/yyyy): ");
+
+
     }
 }
