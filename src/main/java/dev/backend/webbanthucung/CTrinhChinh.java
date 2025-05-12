@@ -13,6 +13,7 @@ import java.util.*;
 public class CTrinhChinh {
     private Set<Tuan> dsTuan = new HashSet<>();
     private final LocalDate ngayBatDauHK2 = LocalDate.of(2025, 1, 13);
+    private String maMHTG, tenMHTG; //dung bien trung gian de luu tru thong tin o dong bi thieu
 
     public void themTuan(Tuan tuan) {
         dsTuan.add(tuan);
@@ -31,7 +32,7 @@ public class CTrinhChinh {
 
         for (Element row : rows) {
             Elements cols = row.select("td");
-
+//            if(cols.size()<11)continue;
             // Duyệt ngược về để tách chuỗi
             for (int i = cols.size() - 1; i > 0; i--) {
                 String maMH = cols.get(0).text();
@@ -53,9 +54,17 @@ public class CTrinhChinh {
                 }else{
                     soThu = Integer.parseInt(thuStr);
                 }
+
                 Thu thu = new Thu(soThu);
 
-                LichHoc lich = new LichHoc(maMH, tenMH, thu, tietBatDau, soTiet, phong);
+                LichHoc lich;
+                if(cols.size() <11){
+                    lich = new LichHoc(maMHTG,tenMHTG,thu, tietBatDau, soTiet, phong);
+                }else{
+                    this.maMHTG = maMH;
+                    this.tenMHTG = tenMH;
+                    lich = new LichHoc(maMH, tenMH, thu, tietBatDau, soTiet, phong);
+                }
 
                 xuLyLichHoc(tuanStr, thuStr, lich);
 
@@ -181,8 +190,6 @@ public class CTrinhChinh {
             }
         }
     }
-
-
 
 
     public static void main(String[] args) throws IOException {

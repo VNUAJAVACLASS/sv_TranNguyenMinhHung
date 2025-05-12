@@ -19,6 +19,9 @@ public class LichHoc {
         this.phong = phong;
     }
 
+    public LichHoc(LichHoc lichHocMoi) {
+    }
+
     @Override
     public String toString() {
         return "Thứ: "+ thu.getThu() + "Mã môn học: " + maMH + "Tên môn học: " + tenMH +
