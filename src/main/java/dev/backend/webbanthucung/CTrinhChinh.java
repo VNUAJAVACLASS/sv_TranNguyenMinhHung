@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class CTrinhChinh {
@@ -138,9 +139,47 @@ public class CTrinhChinh {
         }
     }
 
+    public void hienThiLichHocHomNay() {
+        LocalDate homNay = LocalDate.now();
+
+        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK2, homNay);
+
+        if (soNgay < 0) {
+            System.out.println("Kỳ học này chưa bắt đầu");
+        }
+
+        int soTuanHienTai = (int) (soNgay / 7) + 1;
+        int soThuTrongTuan = homNay.getDayOfWeek().getValue();
+        int soThu = (soThuTrongTuan == 7) ? 8 : soThuTrongTuan + 1;
+
+        System.out.println("Hôm nay là: " + homNay + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
+
+        //tìm tuần hiện tại
+        for (Tuan tuan : dsTuan) {
+            if (tuan.getSoTuan() == soTuanHienTai) {
+                for (Thu thu : tuan.getDsThu()) {
+                    if (thu.getThu() == soThu) {
+                        List<LichHoc> dsLich = thu.getDsLichHoc();
+                        dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+
+                        for (LichHoc lich : dsLich) {
+                            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
+                            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
+                            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
+                                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
-        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");
-        chinh.inTuan();
+        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
+//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");
+//        chinh.inTuan();
+        chinh.hienThiLichHocHomNay();
     }
 }
