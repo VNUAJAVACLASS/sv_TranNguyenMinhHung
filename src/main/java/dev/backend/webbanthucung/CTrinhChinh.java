@@ -175,11 +175,59 @@ public class CTrinhChinh {
         }
     }
 
+    public void hienThiLicHocCaTuan(int soTuan) {
+        if (soTuan < 1 || soTuan > 22) {
+            System.out.println("Chỉ số tuần không hợp lệ. Vui lòng nhập từ 1 đến 22.");
+            return;
+        }
+
+        Optional<Tuan> optionalTuan = dsTuan.stream()
+                .filter(t -> t.getSoTuan() == soTuan)
+                .findFirst();
+
+        if (optionalTuan.isEmpty()) {
+            System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuan);
+            return;
+        }
+
+        Tuan tuan = optionalTuan.get();
+        System.out.println("Thời khóa biểu tuần " + soTuan + ":");
+
+        List<Thu> dsThu = new ArrayList<>(tuan.getDsThu());
+        dsThu.sort(Comparator.comparingInt(Thu::getThu));
+
+        for (Thu thu : dsThu) {
+            System.out.println("  Thứ " + (thu.getThu() == 8 ? "CN" : thu.getThu()) + ":");
+
+            List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
+            dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+
+            for (LichHoc lich : dsLich) {
+                int tietBD = Integer.parseInt(lich.getTietBatDau().getTiet());
+                int tietKT = tietBD + lich.getSoTiet() - 1;
+                System.out.println("    - " + lich.getTenMH() + " (" + lich.getMaMH() +
+                        "), Tiết " + tietBD + " -> " + tietKT + ", Phòng: " + lich.getPhong());
+            }
+        }
+
+
+    }
+
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
 //        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");
 //        chinh.inTuan();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("\n1. Lịch học hôm nay:");
         chinh.hienThiLichHocHomNay();
+
+        System.out.println("\n===================================================");
+
+        System.out.print("\n2. Xem thời khóa biểu cả tuần:");
+        System.out.print("Nhập số tuần cần xem (1-22): ");
+        int soTuan = sc.nextInt();
+        chinh.hienThiLicHocCaTuan(soTuan);
     }
 }
