@@ -7,7 +7,6 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -28,25 +27,22 @@ public class CTrinhChinh {
 
         for (Element row : rows) {
             Elements cols = row.select("td");
-            // Điều chỉnh kích thước kiểm tra dựa trên cấu trúc bảng của bạn
-            // Giả định 11 cột là đầy đủ, 7 cột là thiếu nhiều dữ liệu
+
             if (cols.size() < 7) continue;
 
             String maMH, tenMH;
 
+            //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biết tg
             if (cols.size() < 11) {
-                // Dòng bị thiếu mã MH hoặc tên MH: dùng dữ liệu lưu tạm
                 maMH = this.maMHTG;
                 tenMH = this.tenMHTG;
             } else {
-                // Dòng đầy đủ: lưu lại thông tin mới
                 maMH = cols.get(0).text();
                 tenMH = cols.get(1).text();
                 this.maMHTG = maMH;
                 this.tenMHTG = tenMH;
             }
 
-            // Cần điều chỉnh chỉ số cột dựa trên offset
             String thuStr = cols.get(cols.size() - 10).text();
             String tiet = cols.get(cols.size() - 9).text();
             int soTiet = Integer.parseInt(cols.get(cols.size() - 8).text());
@@ -55,10 +51,10 @@ public class CTrinhChinh {
 
 
             int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
-            // Đối tượng Thu sẽ được tạo hoặc tìm trong hàm xuLyLichHoc
+
             TietHoc tietBatDau = TietHoc.fromTiet(tiet);
 
-            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong); // Thu sẽ được set sau
+            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
 
             xuLyLichHoc(tuanStr, soThu, lich);
         }
@@ -143,7 +139,6 @@ public class CTrinhChinh {
             return;
         }
 
-        // Sử dụng get() để truy cập trực tiếp tuần cần tìm
         Tuan tuan = dsTuan.get(soTuan);
 
         if (tuan == null) { // Kiểm tra xem tuần có tồn tại trong HashMap không
@@ -160,7 +155,6 @@ public class CTrinhChinh {
             System.out.println("  Thứ " + (thu.getThu() == 8 ? "CN" : thu.getThu()) + ":");
 
             List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
-            dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
             for (LichHoc lich : dsLich) {
                 int tietBD = Integer.parseInt(lich.getTietBatDau().getTiet());
@@ -182,7 +176,6 @@ public class CTrinhChinh {
             return;
         }
 
-        // Sử dụng get() để truy cập trực tiếp tuần cần tìm
         Tuan tuan = dsTuan.get(soTuan);
 
         if (tuan == null) { // Kiểm tra xem tuần có tồn tại không
@@ -202,7 +195,6 @@ public class CTrinhChinh {
 
         Thu thu = optionalThu.get();
         List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
-        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
         System.out.println("Thời khóa biểu tuần " + soTuan + ", thứ " + (soThu == 8 ? "CN" : soThu) + ":");
 
@@ -250,7 +242,6 @@ public class CTrinhChinh {
 
         Thu thuHomNay = optionalThu.get();
         List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
-        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
         for (LichHoc lich : dsLich) {
             int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
@@ -302,7 +293,6 @@ public class CTrinhChinh {
 
         Thu thuHomNay = optionalThu.get();
         List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
-        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
 
         for (LichHoc lich : dsLich) {
             int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
