@@ -21,10 +21,6 @@ public class Tuan {
         return dsThu;
     }
 
-    public Thu getThu(int thu) {
-        return dsThu.get(thu);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

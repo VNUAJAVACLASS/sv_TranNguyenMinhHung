@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -18,10 +19,6 @@ public class CTrinhChinh {
 
     public void themTuan(Tuan tuan) {
         dsTuan.add(tuan);
-    }
-
-    public Set<Tuan> getDsTuan() {
-        return dsTuan;
     }
 
     public void docFileHTML(String path) throws IOException {
@@ -73,11 +70,13 @@ public class CTrinhChinh {
             Tuan tuan = new Tuan(soTuan);
             boolean daCoTuan = false;
 
+            //Kiem tra xem tuan da co trong danh sach hay chua
             for (Tuan t : dsTuan) {
                 if (t.equals(tuan)) {
                     daCoTuan = true;
                     boolean daCoThu = false;
 
+                    //Kiem tra xem thu da co trong tuan hay chua
                     for (Thu thu : t.getDsThu()) {
                         if (thu.getThu() == soThu) {
                             thu.themLichHoc(lichHoc);
@@ -86,21 +85,22 @@ public class CTrinhChinh {
                         }
                     }
 
+                    //Neu thu chua co, tao moi va them lich hoc
                     if (!daCoThu) {
                         Thu thuMoi = new Thu(soThu);
                         thuMoi.themLichHoc(lichHoc);
                         t.themThu(thuMoi);
                     }
-
                     break;
                 }
-            }
 
-            if (!daCoTuan) {
-                Thu thuMoi = new Thu(soThu);
-                thuMoi.themLichHoc(lichHoc);
-                tuan.themThu(thuMoi);
-                themTuan(tuan);
+                //Neu chua co tuan, tao moi tuan va them lich hoc
+                if (!daCoTuan) {
+                    Thu thuMoi = new Thu(soThu);
+                    thuMoi.themLichHoc(lichHoc);
+                    tuan.themThu(thuMoi);
+                    themTuan(tuan);
+                }
             }
         }
     }
@@ -257,10 +257,25 @@ public class CTrinhChinh {
         }
     }
 
+    public Date stringToDate(String ngaySinhStr) {
+        Date stringToDate = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            stringToDate = sdf.parse(ngaySinhStr);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            System.out.println("Lỗi ngày nhập!");
+        }
+
+        return stringToDate;
+    }
+
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
-//        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_mhung.html");
+
 //        chinh.inTuan();
         Scanner sc = new Scanner(System.in);
 

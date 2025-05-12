@@ -39,9 +39,4 @@ public enum TietHoc {
         }
         throw new IllegalArgumentException("Không tìm thấy tiết: " + tiet);
     }
-
-    @Override
-    public String toString() {
-        return "Tiết " + tiet + " (" + timeRange + ")";
-    }
 }
