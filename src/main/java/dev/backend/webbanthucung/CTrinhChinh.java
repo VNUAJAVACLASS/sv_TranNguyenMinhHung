@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -136,52 +137,6 @@ public class CTrinhChinh {
         }
     }
 
-    public void hienThiLichHocHomNay() {
-        LocalDate homNay = LocalDate.now();
-
-        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK2, homNay);
-
-        if (soNgay < 0) {
-            System.out.println("Kỳ học này chưa bắt đầu");
-            return;
-        }
-
-        int soTuanHienTai = (int) (soNgay / 7) + 1;
-        int soThuTrongTuan = homNay.getDayOfWeek().getValue();
-        int soThu = (soThuTrongTuan == 7) ? 8 : soThuTrongTuan + 1;
-
-        System.out.println("Hôm nay là: " + homNay + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
-
-        // Sử dụng get() để truy cập trực tiếp tuần hiện tại
-        Tuan tuanHienTai = dsTuan.get(soTuanHienTai);
-
-        if (tuanHienTai == null) {
-            System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuanHienTai);
-            return;
-        }
-
-        // Tìm thứ trong tuần hiện tại
-        Optional<Thu> optionalThu = tuanHienTai.getDsThu().stream()
-                .filter(thu -> thu.getThu() == soThu)
-                .findFirst();
-
-        if (optionalThu.isEmpty()) {
-            System.out.println("Không có lịch học vào hôm nay.");
-            return;
-        }
-
-        Thu thuHomNay = optionalThu.get();
-        List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
-        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
-
-        for (LichHoc lich : dsLich) {
-            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
-            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
-            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
-                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
-        }
-    }
-
     public void hienThiLicHocCaTuan(int soTuan) {
         if (soTuan < 1 || soTuan > 22) {
             System.out.println("Chỉ số tuần không hợp lệ. Vui lòng nhập từ 1 đến 22.");
@@ -259,19 +214,102 @@ public class CTrinhChinh {
         }
     }
 
-    public Date stringToDate(String ngaySinhStr) {
-        Date stringToDate = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    public void hienThiLichHocHomNay() {
+        LocalDate homNay = LocalDate.now();
 
-        try {
-            stringToDate = sdf.parse(ngaySinhStr);
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-            System.out.println("Lỗi ngày nhập!");
+        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK2, homNay);
+
+        if (soNgay < 0) {
+            System.out.println("Kỳ học này chưa bắt đầu");
+            return;
         }
 
-        return stringToDate;
+        int soTuanHienTai = (int) (soNgay / 7) + 1;
+        int soThuTrongTuan = homNay.getDayOfWeek().getValue();
+        int soThu = (soThuTrongTuan == 7) ? 8 : soThuTrongTuan + 1;
+
+        System.out.println("Hôm nay là: " + homNay + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
+
+        // Sử dụng get() để truy cập trực tiếp tuần hiện tại
+        Tuan tuanHienTai = dsTuan.get(soTuanHienTai);
+
+        if (tuanHienTai == null) {
+            System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuanHienTai);
+            return;
+        }
+
+        // Tìm thứ trong tuần hiện tại
+        Optional<Thu> optionalThu = tuanHienTai.getDsThu().stream()
+                .filter(thu -> thu.getThu() == soThu)
+                .findFirst();
+
+        if (optionalThu.isEmpty()) {
+            System.out.println("Không có lịch học vào hôm nay.");
+            return;
+        }
+
+        Thu thuHomNay = optionalThu.get();
+        List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
+        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
+
+        for (LichHoc lich : dsLich) {
+            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
+            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
+            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
+                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
+        }
+    }
+
+    public void hienThiLichHocTheoNgay(String ngay) {
+        if (ngay == null || ngay.isBlank()) {
+            System.out.println("Ngày không hợp lệ hoặc bị bỏ trống.");
+            return;
+        }
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate ngayNhap = LocalDate.parse(ngay, dtf);
+
+        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK2,ngayNhap);
+
+        if (soNgay < 0) {
+            System.out.println("Kỳ học này chưa bắt đầu");
+            return;
+        }
+
+        int soTuanHienTai = (int) (soNgay / 7) + 1;
+        int soThuTrongTuan = ngayNhap.getDayOfWeek().getValue();
+        int soThu = (soThuTrongTuan == 7) ? 8 : soThuTrongTuan + 1;
+
+        System.out.println("Hôm nay là: " + ngayNhap + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
+
+        // Sử dụng get() để truy cập trực tiếp tuần hiện tại
+        Tuan tuanHienTai = dsTuan.get(soTuanHienTai);
+
+        if (tuanHienTai == null) {
+            System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuanHienTai);
+            return;
+        }
+
+        // Tìm thứ trong tuần hiện tại
+        Optional<Thu> optionalThu = tuanHienTai.getDsThu().stream()
+                .filter(thu -> thu.getThu() == soThu)
+                .findFirst();
+
+        if (optionalThu.isEmpty()) {
+            System.out.println("Không có lịch học vào hôm nay.");
+            return;
+        }
+
+        Thu thuHomNay = optionalThu.get();
+        List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
+        dsLich.sort(Comparator.comparing(l -> Integer.parseInt(l.getTietBatDau().getTiet()))); // Sắp xếp theo tiết bắt đầu
+
+        for (LichHoc lich : dsLich) {
+            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
+            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
+            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
+                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
+        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -305,7 +343,11 @@ public class CTrinhChinh {
         System.out.println("\n===================================================");
         System.out.println("\n4. Xem thời khóa biểu theo ngày:");
         System.out.print("Nhập ngày (dd/MM/yyyy): ");
+        sc.nextLine();
+        String ngay = sc.nextLine();
+        chinh.hienThiLichHocTheoNgay(ngay);
 
-
+        System.out.println("\n===================================================");
+        sc.close();
     }
 }
