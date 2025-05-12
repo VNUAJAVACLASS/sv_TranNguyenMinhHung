@@ -213,6 +213,50 @@ public class CTrinhChinh {
 
     }
 
+    public void hienThiLichHocTheoTuanVaThu(int soTuan, int soThu) {
+        if (soTuan < 1 || soTuan > 22) {
+            System.out.println("Tuần không hợp lệ. Vui lòng nhập từ 1 đến 22.");
+            return;
+        }
+
+        if (soThu < 2 || soThu > 8) {
+            System.out.println("Thứ không hợp lệ. Vui lòng nhập từ 2 đến 7 (hoặc 8 cho CN).");
+            return;
+        }
+
+        Optional<Tuan> optionalTuan = dsTuan.stream()
+                .filter(t -> t.getSoTuan() == soTuan)
+                .findFirst();
+
+        if (optionalTuan.isEmpty()) {
+            System.out.println("Không có dữ liệu cho tuần " + soTuan);
+            return;
+        }
+
+        Tuan tuan = optionalTuan.get();
+        Optional<Thu> optionalThu = tuan.getDsThu().stream()
+                .filter(thu -> thu.getThu() == soThu)
+                .findFirst();
+
+        if (optionalThu.isEmpty()) {
+            System.out.println("Không có lịch học cho tuần " + soTuan + ", thứ " + (soThu == 8 ? "CN" : soThu));
+            return;
+        }
+
+        Thu thu = optionalThu.get();
+        List<LichHoc> dsLich = new ArrayList<>(thu.getDsLichHoc());
+        dsLich.sort(Comparator.comparing(l -> l.getTietBatDau().getTiet()));
+
+        System.out.println("Thời khóa biểu tuần " + soTuan + ", thứ " + (soThu == 8 ? "CN" : soThu) + ":");
+
+        for (LichHoc lich : dsLich) {
+            int tietBD = Integer.parseInt(lich.getTietBatDau().getTiet());
+            int tietKT = tietBD + lich.getSoTiet() - 1;
+            System.out.println("  - " + lich.getTenMH() + " (" + lich.getMaMH() + "), Tiết " +
+                    tietBD + " -> " + tietKT + ", Phòng: " + lich.getPhong());
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         CTrinhChinh chinh = new CTrinhChinh();
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
@@ -225,9 +269,22 @@ public class CTrinhChinh {
 
         System.out.println("\n===================================================");
 
-        System.out.print("\n2. Xem thời khóa biểu cả tuần:");
+        System.out.println("\n2. Xem thời khóa biểu cả tuần:");
         System.out.print("Nhập số tuần cần xem (1-22): ");
         int soTuan = sc.nextInt();
         chinh.hienThiLicHocCaTuan(soTuan);
+
+        System.out.println("\n===================================================");
+
+        System.out.println("\n3. Xem thời khóa biểu theo tuần, thứ:");
+        System.out.print("Nhập tuần: ");
+        int soTuan1 = sc.nextInt();
+        System.out.print("Nhập thứ: ");
+        int soThu = sc.nextInt();
+        chinh.hienThiLichHocTheoTuanVaThu(soTuan1, soThu);
+
+        System.out.println("\n===================================================");
+        System.out.println("\n4. Xem thời khóa biểu theo ngày:");
+        System.out.print("Nhập ngày: ");
     }
 }
