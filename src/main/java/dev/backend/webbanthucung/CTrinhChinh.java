@@ -97,7 +97,7 @@ public class CTrinhChinh {
         }
     }
 
-    public void inTuan() {
+    public void inTKB() {
         if (dsTuan.isEmpty()) {
             System.out.println("Chưa có tuần nào được thêm!");
             return;
@@ -308,6 +308,7 @@ public class CTrinhChinh {
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
 //        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_HaNgocQuyen.html");
 
+//        chinh.inTKB();
 
         Scanner sc = new Scanner(System.in);
 
