@@ -60,6 +60,48 @@ public class CTrinhChinh {
         }
     }
 
+    public void docFileHTMLGV(String path) throws IOException {
+        File file = new File(path);
+        Document doc = Jsoup.parse(file, "UTF-8");
+
+        Element table = doc.select("table").first();
+        Elements rows = table.select("tr");
+
+        for (Element row : rows) {
+            Elements cols = row.select("td");
+
+            if (cols.size() < 7) continue;
+
+            String maMH, tenMH;
+
+            //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biết tg
+            if (cols.size() < 11) {
+                maMH = this.maMHTG;
+                tenMH = this.tenMHTG;
+            } else {
+                maMH = cols.get(0).text();
+                tenMH = cols.get(1).text();
+                this.maMHTG = maMH;
+                this.tenMHTG = tenMH;
+            }
+
+            String thuStr = cols.get(cols.size() - 12).text();
+            String tiet = cols.get(cols.size() - 11).text();
+            int soTiet = Integer.parseInt(cols.get(cols.size() - 10).text());
+            String phong = cols.get(cols.size() - 9).text();
+            String tuanStr = cols.get(cols.size() - 6).text();
+
+            if(thuStr == "") continue;
+            int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
+
+            TietHoc tietBatDau = TietHoc.fromTiet(tiet);
+
+            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
+
+            xuLyLichHoc(tuanStr, soThu, lich);
+        }
+    }
+
     public void xuLyLichHoc(String tuanStr, int soThu, LichHoc lichHoc) {
         for (int i = 0; i < tuanStr.length(); i++) {
             char c = tuanStr.charAt(i);
@@ -307,6 +349,7 @@ public class CTrinhChinh {
 
         chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_TranNguyenMinhHung.html");
 //        chinh.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb_HaNgocQuyen.html");
+//        chinh.docFileHTMLGV("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/tkb.html");
 
 //        chinh.inTKB();
 
