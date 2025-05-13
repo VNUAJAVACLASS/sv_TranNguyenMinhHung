@@ -112,7 +112,7 @@ public class CTrinhChinh {
             System.out.println("Tuần " + tuan.getSoTuan() + ":");
 
             List<Thu> dsThu = new ArrayList<>(tuan.getDsThu());
-            dsThu.sort(Comparator.comparingInt(Thu::getThu));
+//            dsThu.sort(Comparator.comparingInt(Thu::getThu));
 
             for (Thu thu : dsThu) {
                 System.out.println("  Thứ " + (thu.getThu() == 8 ? "CN" : thu.getThu()) + ":");
