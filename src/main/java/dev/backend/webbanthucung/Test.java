@@ -9,6 +9,7 @@ public class Test {
        NguoiDung nd = new NguoiDung();
        nd.nhap(sc);
 
+
        DangNhapVNUA dn = new DangNhapVNUA(nd);
        dn.dangNhap();
        dn.layDuLieuLichHoc();
