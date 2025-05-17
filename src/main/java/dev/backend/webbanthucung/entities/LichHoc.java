@@ -1,4 +1,4 @@
-package dev.backend.webbanthucung;
+package dev.backend.webbanthucung.entities;
 
 public class LichHoc {
     private String maMH;

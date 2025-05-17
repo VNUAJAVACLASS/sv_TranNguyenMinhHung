@@ -1,4 +1,4 @@
-package dev.backend.webbanthucung;
+package dev.backend.webbanthucung.entities;
 
 public enum TietHoc {
     TIET_1("1", "7:00 - 7:50"),

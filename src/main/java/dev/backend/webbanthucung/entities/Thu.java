@@ -1,4 +1,4 @@
-package dev.backend.webbanthucung;
+package dev.backend.webbanthucung.entities;
 
 import java.util.ArrayList;
 import java.util.List;
