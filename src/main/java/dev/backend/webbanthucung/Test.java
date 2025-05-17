@@ -8,7 +8,7 @@ public class Test {
     public static void main(String[] args) {Scanner sc = new Scanner(System.in);
        NguoiDung nd = new NguoiDung();
        nd.nhap(sc);
-  //est sdfsf
+  //est sdfsf jlfsdfj
 
        DangNhapVNUA dn = new DangNhapVNUA(nd);
        dn.dangNhap();
