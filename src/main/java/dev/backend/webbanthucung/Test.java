@@ -9,7 +9,7 @@ public class Test {
        NguoiDung nd = new NguoiDung();
        nd.nhap(sc);
   //est sdfsf jlfsdfj
-
+//hhfdfd
        DangNhapVNUA dn = new DangNhapVNUA(nd);
        dn.dangNhap();
        dn.layDuLieuLichHoc();
