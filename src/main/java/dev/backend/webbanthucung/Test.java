@@ -1,9 +1,7 @@
 package dev.backend.webbanthucung;
 
-import com.microsoft.playwright.*;
 import dev.backend.webbanthucung.entities.NguoiDung;
 
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Test {
