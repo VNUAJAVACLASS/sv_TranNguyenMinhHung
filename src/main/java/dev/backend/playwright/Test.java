@@ -1,6 +1,6 @@
-package dev.backend.webbanthucung;
+package dev.backend.playwright;
 
-import dev.backend.webbanthucung.entities.NguoiDung;
+import dev.backend.playwright.entities.NguoiDung;
 
 import java.util.Scanner;
 
