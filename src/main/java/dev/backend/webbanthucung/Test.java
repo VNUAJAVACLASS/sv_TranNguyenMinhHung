@@ -7,8 +7,6 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Test {
-
-
     public static void main(String[] args) {
 
 
