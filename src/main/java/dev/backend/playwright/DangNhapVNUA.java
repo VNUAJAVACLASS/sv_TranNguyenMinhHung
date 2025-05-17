@@ -1,10 +1,10 @@
-package dev.backend.webbanthucung;
+package dev.backend.playwright;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import dev.backend.webbanthucung.entities.NguoiDung;
+import dev.backend.playwright.entities.NguoiDung;
 
 public class DangNhapVNUA {
     private static final String url = "https://daotao.vnua.edu.vn/#/home";

@@ -1,4 +1,4 @@
-package dev.backend.webbanthucung;
+package dev.backend.playwright;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

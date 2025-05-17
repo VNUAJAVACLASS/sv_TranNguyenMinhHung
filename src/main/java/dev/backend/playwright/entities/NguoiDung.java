@@ -1,4 +1,4 @@
-package dev.backend.webbanthucung.entities;
+package dev.backend.playwright.entities;
 
 import java.util.Scanner;
 

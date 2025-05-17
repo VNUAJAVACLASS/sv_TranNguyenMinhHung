@@ -1,9 +1,9 @@
-package dev.backend.webbanthucung.jsoup;
+package dev.backend.playwright.jsoup;
 
-import dev.backend.webbanthucung.entities.LichHoc;
-import dev.backend.webbanthucung.entities.Thu;
-import dev.backend.webbanthucung.entities.TietHoc;
-import dev.backend.webbanthucung.entities.Tuan;
+import dev.backend.playwright.entities.LichHoc;
+import dev.backend.playwright.entities.Thu;
+import dev.backend.playwright.entities.TietHoc;
+import dev.backend.playwright.entities.Tuan;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

@@ -1,6 +1,6 @@
-package dev.backend.webbanthucung;
+package dev.backend.playwright;
 
-import dev.backend.webbanthucung.jsoup.JsoupImpl;
+import dev.backend.playwright.jsoup.JsoupImpl;
 import java.io.IOException;
 import java.util.*;
 
