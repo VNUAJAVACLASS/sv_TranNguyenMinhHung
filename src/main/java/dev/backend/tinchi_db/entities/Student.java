@@ -55,7 +55,7 @@ public class Student extends Human{
 
     @Override
     public String toString() {
-        return super.toString() + " - " + _class;
+        return super.toString() + "\nLớp: " + _class;
     }
 
     //Getter and Setter

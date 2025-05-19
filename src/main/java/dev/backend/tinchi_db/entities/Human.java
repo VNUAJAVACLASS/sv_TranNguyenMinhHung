@@ -4,9 +4,10 @@ import java.util.Scanner;
 
 public class Human {
     //Khai bao cac thuoc tinh
-    protected String address;
     protected String code;
     protected String fullname;
+    protected String address;
+    protected int role;
 
     //Constructor
     public Human(){}
@@ -20,10 +21,10 @@ public class Human {
         this.fullname = fullname;
     }
 
-    public Human(String fullname, String code, String address) {
-        this.address = address;
+    public Human(String code, String fullname, String address) {
         this.code = code;
         this.fullname = fullname;
+        this.address = address;
     }
 
     //method
@@ -35,11 +36,21 @@ public class Human {
         fullname = sc.nextLine();
         System.out.print("Nhập địa chỉ: ");
         address = sc.nextLine();
+        Human hm = null;
+        if(hm instanceof Lecturer){
+            this.role =0;
+        }else if(hm instanceof Student){
+            this.role = 1;
+        }
     }
 
     //To String
     public String toString(){
-        return fullname + " - " + code + " - " + address;
+        String str = "\nMã: " + code
+                + "\nHọ tên: " + fullname
+                + "\nĐịa chỉ: " + address;
+
+        return str;
     }
 
 
@@ -67,5 +78,13 @@ public class Human {
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 }

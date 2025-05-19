@@ -4,10 +4,13 @@ public class Subject {
     private String subjectCode;
     private String subjectName;
     private int credit;
-    private float attendanceMark, midExamMark, finalExamMark;
+    private float attendanceMark, finalExamMark;
+    private float midExamMark1, midExamMark2, midExamMark3;
+    private float totalMark;
 
     //Constructor
-    public Subject(){}
+    public Subject() {
+    }
 
     public Subject(String subjectCode, String subjectName, int credit) {
         this.subjectCode = subjectCode;
@@ -16,24 +19,24 @@ public class Subject {
     }
 
     //method
-    public float calConversionMark(){
-        float subjectMark = calSubjectnMark();
+    public float calConversionMark() {
+        float subjectMark = getTotalMark();
         float conversionMark = -1;
 
-        if(subjectMark <= 3.9) conversionMark = 0;
-        else if(subjectMark <= 4.9) conversionMark = 1;
+        if (subjectMark <= 3.9) conversionMark = 0;
+        else if (subjectMark <= 4.9) conversionMark = 1;
         else if (subjectMark <= 5.4) conversionMark = 1.5f;
-        else if(subjectMark <= 6.4) conversionMark = 2;
-        else if(subjectMark <= 6.9) conversionMark = 2.5f;
-        else if(subjectMark <= 7.9) conversionMark = 3;
-        else if(subjectMark <= 8.4) conversionMark = 3.5f;
+        else if (subjectMark <= 6.4) conversionMark = 2;
+        else if (subjectMark <= 6.9) conversionMark = 2.5f;
+        else if (subjectMark <= 7.9) conversionMark = 3;
+        else if (subjectMark <= 8.4) conversionMark = 3.5f;
         else conversionMark = 4;
 
         return conversionMark;
     }
 
-    public float calConversionMark(String grade){
-        float conversionMark = switch (grade){
+    public float calConversionMark(String grade) {
+        float conversionMark = switch (grade) {
             case "F" -> 0;
             case "D" -> 1;
             case "D+" -> 1.5f;
@@ -49,20 +52,37 @@ public class Subject {
         return conversionMark;
     }
 
-    public float calSubjectnMark(){
-        return attendanceMark * 0.1f + midExamMark * 0.4f + finalExamMark * 0.5f;
+    public float calSubjectnMark(float cc, float gk, float ck) {
+        float total = cc * attendanceMark + gk * midExamMark1 + ck * finalExamMark;
+        setTotalMark(total);
+
+        return total;
     }
 
-    public String calGrade(){
-        float subjectMark = calSubjectnMark();
+    public float calSubjectnMark(float cc, float gk, float gk2, float ck) {
+        float total = cc * attendanceMark + gk * midExamMark1 + gk2 * midExamMark2 + ck * finalExamMark;
+        setTotalMark(total);
+
+        return total;
+    }
+
+    public float calSubjectnMark(float cc, float gk, float gk2, float gk3, float ck) {
+        float total = cc * attendanceMark + gk * midExamMark1 + gk2 * midExamMark2 + +gk3 * midExamMark3 + finalExamMark;
+        setTotalMark(total);
+
+        return total;
+    }
+
+    public String calGrade() {
+        float subjectMark = getTotalMark();
         String grade = subjectMark <= 3.9 ? "F" :
-                        subjectMark <= 4.9 ? "D" :
-                        subjectMark <= 5.4 ? "D+" :
-                        subjectMark <= 6.4 ? "C" :
-                        subjectMark <= 6.9 ? "C+" :
-                        subjectMark <= 7.9 ? "B" :
-                        subjectMark <= 8.4 ? "B+" :
-                        subjectMark <= 10 ? "A" : null;
+                       subjectMark <= 4.9 ? "D" :
+                       subjectMark <= 5.4 ? "D+" :
+                       subjectMark <= 6.4 ? "C" :
+                       subjectMark <= 6.9 ? "C+" :
+                       subjectMark <= 7.9 ? "B" :
+                       subjectMark <= 8.4 ? "B+" :
+                       subjectMark <= 10 ? "A" : null;
 
         return grade;
     }
@@ -100,12 +120,36 @@ public class Subject {
         this.attendanceMark = attendanceMark;
     }
 
-    public float getMidExamMark() {
-        return midExamMark;
+    public float getMidExamMark1() {
+        return midExamMark1;
     }
 
-    public void setMidExamMark(float midExamMark) {
-        this.midExamMark = midExamMark;
+    public void setMidExamMark1(float midExamMark1) {
+        this.midExamMark1 = midExamMark1;
+    }
+
+    public float getMidExamMark2() {
+        return midExamMark2;
+    }
+
+    public void setMidExamMark2(float midExamMark2) {
+        this.midExamMark2 = midExamMark2;
+    }
+
+    public float getMidExamMark3() {
+        return midExamMark3;
+    }
+
+    public void setMidExamMark3(float midExamMark3) {
+        this.midExamMark3 = midExamMark3;
+    }
+
+    public float getTotalMark() {
+        return totalMark;
+    }
+
+    public void setTotalMark(float totalMark) {
+        this.totalMark = totalMark;
     }
 
     public float getFinalExamMark() {
