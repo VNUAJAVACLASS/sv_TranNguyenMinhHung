@@ -4,8 +4,9 @@ public class Subject {
     private String subjectCode;
     private String subjectName;
     private int credit;
-    private float attendanceMark, finalExamMark;
+    private float attendanceMark;
     private float midExamMark1, midExamMark2, midExamMark3;
+    private float finalExamMark;
     private float totalMark;
 
     //Constructor
@@ -16,6 +17,17 @@ public class Subject {
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
         this.credit = credit;
+    }
+
+    public Subject(String subjectCode, String subjectName, int credit, float attendanceMark, float midExamMark1, float midExamMark2, float midExamMark3, float finalExamMark) {
+        this.subjectCode = subjectCode;
+        this.subjectName = subjectName;
+        this.credit = credit;
+        this.attendanceMark = attendanceMark;
+        this.midExamMark1 = midExamMark1;
+        this.midExamMark2 = midExamMark2;
+        this.midExamMark3 = midExamMark3;
+        this.finalExamMark = finalExamMark;
     }
 
     //method
@@ -85,6 +97,18 @@ public class Subject {
                        subjectMark <= 10 ? "A" : null;
 
         return grade;
+    }
+
+    @Override
+    public String toString() {
+        return "\n\tMã môn học: " + subjectCode
+                + "\n\tTên môn học: " + subjectName
+                + "\n\tSố tín chỉ: " + credit
+                + "\n\tĐiểm chuyên cần: " + attendanceMark
+                + "\n\tĐiểm giữa kì 1: " + midExamMark1
+                + "\n\tĐiểm giữa kì 2: " + midExamMark2
+                + "\n\tĐiểm giữa kì 3: " + midExamMark3
+                + "\n\tĐiểm cuối kì: " + finalExamMark;
     }
 
     //Getter and Setter

@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-    private Connection connection;
+    private Connection conn;
 
     public UserDAO() {
         try {
             String url = "jdbc:ucanaccess://lib/baitoantinchi.accdb";
-            connection = DriverManager.getConnection(url);
+            conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -28,7 +28,7 @@ public class UserDAO {
 
         try {
             String sql = "select * from tbl_users";
-            Statement statement = connection.createStatement();
+            Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next()) {
@@ -61,7 +61,7 @@ public class UserDAO {
 
         try {
             String sql = "select * from tbl_users where role = 1";
-            Statement statement = connection.createStatement();
+            Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next()) {
@@ -94,7 +94,7 @@ public class UserDAO {
 
         try {
             String sql = "select * from tbl_users where role = 0";
-            Statement statement = connection.createStatement();
+            Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next()) {
@@ -127,7 +127,7 @@ public class UserDAO {
         String sql = "select * from tbl_users where user_code = ?";
 
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, code);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -154,7 +154,7 @@ public class UserDAO {
         String sql = "insert into tbl_users (user_code, fullname, address, class, password, role) values (?, ?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, human.getCode());
             ps.setString(2, human.getFullname());
             ps.setString(3, human.getAddress());
@@ -183,7 +183,7 @@ public class UserDAO {
         String sql = "update tbl_users Set fullname = ?, address = ?, class = ?, password = ? where user_code = ?";
 
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, human.getFullname());
             ps.setString(2, human.getAddress());
 
@@ -211,7 +211,7 @@ public class UserDAO {
         String sql = "delete from tbl_users where user_code = ?";
 
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, code);
             int rowDeleted = ps.executeUpdate();
             return rowDeleted > 0;

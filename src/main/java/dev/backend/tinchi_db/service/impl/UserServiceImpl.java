@@ -7,7 +7,6 @@ import dev.backend.tinchi_db.entities.Student;
 import dev.backend.tinchi_db.service.UserService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class UserServiceImpl implements UserService {
