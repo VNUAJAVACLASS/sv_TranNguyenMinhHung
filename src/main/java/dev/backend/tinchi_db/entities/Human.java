@@ -8,6 +8,7 @@ public class Human {
     protected String fullname;
     protected String address;
     protected int role;
+    private Human hm;
 
     //Constructor
     public Human(){}
@@ -39,6 +40,20 @@ public class Human {
         Human hm = null;
         if(hm instanceof Lecturer){
             this.role =0;
+        }else if(hm instanceof Student){
+            this.role = 1;
+        }
+    }
+
+    public void enterInfo(Scanner sc){
+        sc.nextLine();
+        System.out.print("Nhập họ tên: ");
+        fullname = sc.nextLine();
+        System.out.print("Nhập địa chỉ: ");
+        address = sc.nextLine();
+        Human hm = null;
+        if(hm instanceof Lecturer){
+            this.role = 0;
         }else if(hm instanceof Student){
             this.role = 1;
         }

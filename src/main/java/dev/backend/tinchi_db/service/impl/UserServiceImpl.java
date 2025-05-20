@@ -118,4 +118,42 @@ public class UserServiceImpl implements UserService {
 
         return "Thêm nhân sự thất bại!";
     }
+
+    //Sua thong tin nhan su
+    public String updateHR(Scanner sc) {
+        System.out.print("Nhập mã nhân sự cần cập nhật: ");
+        String code = sc.nextLine();
+
+        Human oldInfo = userDAO.getHumanByCode(code);
+        if (oldInfo == null) {
+            return "Không tìm thấy nhân sự!";
+        }
+
+        System.out.println("Nhập thông tin mới:");
+        if(oldInfo instanceof Lecturer){
+            oldInfo = new Lecturer();
+        }else if(oldInfo instanceof Student){
+            oldInfo = new Student();
+        }
+
+        oldInfo.enterInfo(sc);
+        oldInfo.setCode(code);
+
+        if(userDAO.updateHuman(oldInfo)) {
+            return "Cập nhật thông tin thành công!";
+        }
+
+        return "Sửa thông tin thất bại!";
+    }
+
+    //Xoa nhan su
+    public String deleteHR(Scanner sc) {
+        System.out.print("Nhập mã nhân sự muốn xóa: ");
+        String code = sc.nextLine();
+        if(userDAO.deleteHumanByCode(code)){
+            return "Xóa nhân sự thành công!";
+        }
+
+        return "Xóa nhân sự thất bại!";
+    }
 }

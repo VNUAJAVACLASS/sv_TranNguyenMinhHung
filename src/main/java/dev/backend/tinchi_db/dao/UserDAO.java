@@ -177,4 +177,48 @@ public class UserDAO {
 
         return false;
     }
+
+    //Sua thong tin nhan su
+    public boolean updateHuman(Human human) {
+        String sql = "update tbl_users Set fullname = ?, address = ?, class = ?, password = ? where user_code = ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, human.getFullname());
+            ps.setString(2, human.getAddress());
+
+            if(human instanceof Student) {
+                ps.setString(3, ((Student) human).get_class());
+                ps.setString(4,null);
+            }else if(human instanceof Lecturer) {
+                ps.setString(3,null);
+                ps.setString(4,((Lecturer)human).getPassword());
+            }
+
+            ps.setString(5,human.getCode());
+
+            int rowUpdated = ps.executeUpdate();
+            return rowUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    //Xoa nhan su
+    public boolean deleteHumanByCode(String code) {
+        String sql = "delete from tbl_users where user_code = ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, code);
+            int rowDeleted = ps.executeUpdate();
+            return rowDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

@@ -12,4 +12,7 @@ public interface UserService {
     String searchHuman(String code);
 
     String addHR(Scanner sc);
+
+    String updateHR(Scanner sc);
+    String deleteHR(Scanner sc);
 }

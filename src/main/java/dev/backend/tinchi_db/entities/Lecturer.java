@@ -25,7 +25,13 @@ public class Lecturer extends Human {
         super.nhap(sc);
         System.out.print("Nhập mật khẩu: ");
         password = sc.nextLine();
-        this.role = 0;
+    }
+
+    @Override
+    public void enterInfo(Scanner sc) {
+        super.enterInfo(sc);
+        System.out.print("Nhập mật khẩu: ");
+        password = sc.nextLine();
     }
 
     @Override

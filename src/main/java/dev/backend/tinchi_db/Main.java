@@ -17,7 +17,7 @@ public class Main {
 //        System.out.print("Nhập vào mã nhân sự: ");
 //        String code = sc.nextLine();
 //        System.out.println(userService.searchHuman(code));
-        userService.addHR(sc);
+        userService.deleteHR(sc);
         userService.printHRList();
     }
 }

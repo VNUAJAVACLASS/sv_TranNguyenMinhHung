@@ -54,6 +54,13 @@ public class Student extends Human{
     }
 
     @Override
+    public void enterInfo(Scanner sc) {
+        super.enterInfo(sc);
+        System.out.print("Nhập lớp: ");
+        _class = sc.nextLine();
+    }
+
+    @Override
     public String toString() {
         return super.toString() + "\nLớp: " + _class;
     }
