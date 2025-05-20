@@ -14,9 +14,10 @@ public class Main {
 //        System.out.println("===========================================");
 //        userService.printLecturerList();
         Scanner sc = new Scanner(System.in);
-        System.out.print("Nhập vào mã nhân sự: ");
-        String code = sc.nextLine();
-        System.out.println(userService.searchHuman(code));
-
+//        System.out.print("Nhập vào mã nhân sự: ");
+//        String code = sc.nextLine();
+//        System.out.println(userService.searchHuman(code));
+        userService.addHR(sc);
+        userService.printHRList();
     }
 }

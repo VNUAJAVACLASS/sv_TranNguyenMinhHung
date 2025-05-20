@@ -2,9 +2,13 @@ package dev.backend.tinchi_db.service.impl;
 
 import dev.backend.tinchi_db.dao.UserDAO;
 import dev.backend.tinchi_db.entities.Human;
+import dev.backend.tinchi_db.entities.Lecturer;
+import dev.backend.tinchi_db.entities.Student;
 import dev.backend.tinchi_db.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
@@ -86,5 +90,32 @@ public class UserServiceImpl implements UserService {
         }
 
         return human.toString();
+    }
+
+    //them nhan su
+    public String addHR(Scanner sc) {
+        System.out.print("Chọn loại nhân sự (0 - Lecturer, 1 - Student): ");
+        int chon = sc.nextInt();
+
+        Human hm;
+        switch (chon) {
+            case 0->{
+                hm = new Lecturer();
+                hm.nhap(sc);
+            }
+            case 1->{
+                hm = new Student();
+                hm.nhap(sc);
+            }
+            default -> {
+                return "Loại nhân sự không hợp lệ!";
+            }
+        }
+
+        if(userDAO.addHuman(hm)) {
+            return "Thêm nhân sự thành công!";
+        }
+
+        return "Thêm nhân sự thất bại!";
     }
 }

@@ -149,4 +149,32 @@ public class UserDAO {
         return hm;
     }
 
+    //Thêm nhân sự
+    public boolean addHuman(Human human) {
+        String sql = "insert into tbl_users (user_code, fullname, address, class, password, role) values (?, ?, ?, ?, ?, ?)";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, human.getCode());
+            ps.setString(2, human.getFullname());
+            ps.setString(3, human.getAddress());
+
+            if(human instanceof Student) {
+                ps.setString(4, ((Student) human).get_class());
+                ps.setString(5,null);
+                ps.setInt(6,1);
+            }else if(human instanceof Lecturer) {
+                ps.setString(4,null);
+                ps.setString(5,((Lecturer)human).getPassword());
+                ps.setInt(6,0);
+            }
+
+            int rowInserted = ps.executeUpdate();
+            return rowInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
