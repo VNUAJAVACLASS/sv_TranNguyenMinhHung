@@ -180,7 +180,8 @@ public class UserDAO {
 
     //Sua thong tin nhan su
     public boolean updateHuman(Human human) {
-        String sql = "update tbl_users Set fullname = ?, address = ?, class = ?, password = ? where user_code = ?";
+        String sql = "update tbl_users Set fullname = ?, address = ?, class = ?, password = ? " +
+                "where user_code = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

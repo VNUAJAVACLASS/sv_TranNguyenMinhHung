@@ -36,7 +36,7 @@ public class Lecturer extends Human {
 
     @Override
     public String toString() {
-        return super.toString() + "\nMật khẩu: " + password;
+        return super.toString() + "\n\tMật khẩu: " + password;
     }
 
     //Getter Setter

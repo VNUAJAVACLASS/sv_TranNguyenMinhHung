@@ -61,9 +61,9 @@ public class Human {
 
     //To String
     public String toString(){
-        String str = "\nMã: " + code
-                + "\nHọ tên: " + fullname
-                + "\nĐịa chỉ: " + address;
+        String str = "\n\tMã: " + code
+                + "\n\tHọ tên: " + fullname
+                + "\n\tĐịa chỉ: " + address;
 
         return str;
     }

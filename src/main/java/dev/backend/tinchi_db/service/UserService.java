@@ -14,5 +14,6 @@ public interface UserService {
     String addHR(Scanner sc);
 
     String updateHR(Scanner sc);
+
     String deleteHR(Scanner sc);
 }

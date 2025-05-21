@@ -1,5 +1,7 @@
 package dev.backend.tinchi_db.entities;
 
+import java.util.Scanner;
+
 public class Subject {
     private String subjectCode;
     private String subjectName;
@@ -109,6 +111,27 @@ public class Subject {
                 + "\n\tĐiểm giữa kì 2: " + midExamMark2
                 + "\n\tĐiểm giữa kì 3: " + midExamMark3
                 + "\n\tĐiểm cuối kì: " + finalExamMark;
+    }
+
+    public void nhap(Scanner sc){
+        System.out.print("Nhập mã môn học: "); subjectCode = sc.nextLine();
+        System.out.print("Nhập tên môn học: "); subjectName = sc.nextLine();
+        System.out.print("Nhập số tín chỉ: "); credit = sc.nextInt();
+        System.out.print("Nhập điểm chuyên cần: "); attendanceMark = sc.nextFloat();
+        System.out.print("Nhập điểm giữa kì 1: "); midExamMark1 = sc.nextFloat();
+        System.out.print("Nhập điểm giữa kì 2: "); midExamMark2 = sc.nextFloat();
+        System.out.print("Nhập điểm giữa kì 3: "); midExamMark3 = sc.nextFloat();
+        System.out.print("Nhập điểm cuối kì: "); finalExamMark = sc.nextFloat();
+    }
+
+    public void enterInfo(Scanner sc){
+        System.out.print("Nhập tên môn học: "); subjectName = sc.nextLine();
+        System.out.print("Nhập số tín chỉ: "); credit = sc.nextInt();
+        System.out.print("Nhập điểm chuyên cần: "); attendanceMark = sc.nextFloat();
+        System.out.print("Nhập điểm giữa kì 1: "); midExamMark1 = sc.nextFloat();
+        System.out.print("Nhập điểm giữa kì 2: "); midExamMark2 = sc.nextFloat();
+        System.out.print("Nhập điểm giữa kì 3: "); midExamMark3 = sc.nextFloat();
+        System.out.print("Nhập điểm cuối kì: "); finalExamMark = sc.nextFloat();
     }
 
     //Getter and Setter
