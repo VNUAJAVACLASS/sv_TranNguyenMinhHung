@@ -1,5 +1,6 @@
 package dev.backend.tinchi_db;
 
+import dev.backend.tinchi_db.dao.SubjectDAO;
 import dev.backend.tinchi_db.service.SubjectService;
 import dev.backend.tinchi_db.service.UserService;
 import dev.backend.tinchi_db.service.impl.SubjectServiceImpl;
@@ -30,6 +31,8 @@ public class Main {
             System.out.println("10. Thêm môn học.");
             System.out.println("11. Sửa môn học.");
             System.out.println("12. Xóa môn học.");
+            System.out.println("13. Đăng ký môn học.");
+            System.out.println("14. Nhập điểm sinh viên.");
             System.out.println("0.Thoát chương trình");
 
             System.out.print("\nNhập lựa chọn: ");
@@ -57,6 +60,34 @@ public class Main {
                 case 10 -> subjectService.addSubject(sc);
                 case 11 -> subjectService.updateSubject(sc);
                 case 12 -> subjectService.deleteSubject(sc);
+                case 13 ->{
+                    //in ra danh sách sinh viên
+                    userService.printStudentList();
+                    System.out.print("Nhập mã sinh viên: ");
+                    String studentCode = sc.nextLine();
+
+                    //in ra danh sách môn
+                    subjectService.printSubjectList();
+                    System.out.print("Nhập mã môn học: ");
+                    String subjectCode = sc.nextLine();
+
+                    //Đang kí môn
+                    userService.registerSubject(studentCode, subjectCode);
+                }
+                case 14 ->{
+                    //in ra danh sách sinh viên
+                    userService.printStudentList();
+                    System.out.print("Nhập mã sinh viên: ");
+                    String studentCode = sc.nextLine();
+
+                    //in ra danh sách môn
+                    subjectService.printSubjectList();
+                    System.out.print("Nhập mã môn học: ");
+                    String subjectCode = sc.nextLine();
+
+                    //nhap diem
+                    userService.addScore(studentCode, subjectCode);
+                }
                 case 0 ->{
                     System.out.println("Đang thoát chương trình...");
                 }

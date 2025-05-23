@@ -3,6 +3,7 @@ package dev.backend.tinchi_db.dao;
 import dev.backend.tinchi_db.entities.Human;
 import dev.backend.tinchi_db.entities.Lecturer;
 import dev.backend.tinchi_db.entities.Student;
+import dev.backend.tinchi_db.entities.Subject;
 
 import java.sql.*;
 
@@ -149,6 +150,29 @@ public class UserDAO {
         return hm;
     }
 
+    public Student getStudentByCode(String code) {
+        Student hm = null;
+        String  sql = "select * from tbl_users where user_code = ? and role = 1";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, code);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String userCode = rs.getString("user_code");
+                String fullName = rs.getString("fullname");
+                String address = rs.getString("address");
+                String _class = rs.getString("class");
+                hm = new  Student(userCode, fullName, address, _class);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return hm;
+    }
+
     //Thêm nhân sự
     public boolean addHuman(Human human) {
         String sql = "insert into tbl_users (user_code, fullname, address, class, password, role) values (?, ?, ?, ?, ?, ?)";
@@ -216,6 +240,48 @@ public class UserDAO {
             ps.setString(1, code);
             int rowDeleted = ps.executeUpdate();
             return rowDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    //Them mon hoc cho sinh vien
+    public boolean addSubjectForStudent(Student student, Subject subject) {
+        String sql = "insert into tbl_user_subject (user_code, subject_code) values (?, ?)";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, student.getCode());
+            ps.setString(2, subject.getSubjectCode());
+
+            int rowInserted = ps.executeUpdate();
+            return rowInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean addScore(Student student, Subject subject) {
+        String sql = "update tbl_user_subject set attendence_exam_mark = ?, middle_exam_mark1 = ?, " +
+                "middle_exam_mark2 = ?, middle_exam_mark3 = ?, final_exam_mark = ? " +
+                "where user_code = ? and subject_code = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setFloat(1, subject.getAttendanceMark());
+            ps.setFloat(2, subject.getMidExamMark1());
+            ps.setFloat(3, subject.getMidExamMark2());
+            ps.setFloat(4, subject.getMidExamMark3());
+            ps.setFloat(5, subject.getFinalExamMark());
+            ps.setString(6, student.getCode());
+            ps.setString(7, subject.getSubjectCode());
+
+            int rowInserted = ps.executeUpdate();
+            return rowInserted > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }

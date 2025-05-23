@@ -1,9 +1,11 @@
 package dev.backend.tinchi_db.service.impl;
 
+import dev.backend.tinchi_db.dao.SubjectDAO;
 import dev.backend.tinchi_db.dao.UserDAO;
 import dev.backend.tinchi_db.entities.Human;
 import dev.backend.tinchi_db.entities.Lecturer;
 import dev.backend.tinchi_db.entities.Student;
+import dev.backend.tinchi_db.entities.Subject;
 import dev.backend.tinchi_db.service.UserService;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.Scanner;
 
 public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
+    private SubjectDAO subjectDAO;
 
     public UserServiceImpl() {
         userDAO = new UserDAO();
+        subjectDAO = new SubjectDAO();
     }
 
     public String printHRList() {
@@ -154,5 +158,49 @@ public class UserServiceImpl implements UserService {
         }
 
         return "Xóa nhân sự thất bại!";
+    }
+
+    //Dang ki mon hoc cho sinh vien
+    public String registerSubject(String studentCode, String subjectCode) {
+        Student student = userDAO.getStudentByCode(studentCode);
+        if(student == null){
+            System.out.println("Không tìm thấy sinh viên!");
+            return "Không tìm thấy sinh viên!";
+        }
+        System.out.println("Chọn môn học đăng ký");
+        Subject subject =  subjectDAO.getSubjectByCode(subjectCode);
+        if(subject == null){
+            System.out.println("Không tìm thấy môn học!");
+            return "Không tìm thấy môn học!";
+        }
+
+        if(userDAO.addSubjectForStudent(student, subject)) {
+            System.out.println("Thêm môn học cho sinh viên thành công!");
+            return "Thêm môn học cho sinh viên thành công!";
+        }
+
+        return "Thêm môn học cho sinh viên thất bại!";
+    }
+
+    //Nhap diem
+    public String addScore(String studentCode, String subjectCode) {
+        Student student = userDAO.getStudentByCode(studentCode);
+        if(student == null){
+            System.out.println("Không tìm thấy sinh viên!");
+            return "Không tìm thấy sinh viên!";
+        }
+
+        Subject subject = subjectDAO.getSubjectByCode(subjectCode);
+        if(subject == null){
+            System.out.println("Không tìm thấy môn học!");
+            return "Không tìm thấy môn học!";
+        }
+
+        if(userDAO.addScore(student, subject)) {
+            System.out.println("Nhập điểm sinh viên thành công!");
+            return "Nhập điểm sinh viên thành công!";
+        }
+
+        return "Nhập điểm sinh viên không thành công!";
     }
 }
