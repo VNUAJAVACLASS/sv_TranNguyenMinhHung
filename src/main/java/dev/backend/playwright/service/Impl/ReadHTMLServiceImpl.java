@@ -1,9 +1,10 @@
-package dev.backend.playwright.jsoup;
+package dev.backend.playwright.service.Impl;
 
 import dev.backend.playwright.entities.LichHoc;
 import dev.backend.playwright.entities.Thu;
 import dev.backend.playwright.entities.TietHoc;
 import dev.backend.playwright.entities.Tuan;
+import dev.backend.playwright.service.ReadHTMLService;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -15,12 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class JsoupImpl {
+public class ReadHTMLServiceImpl implements ReadHTMLService {
     private Map<Integer, Tuan> dsTuan = new HashMap<>();
     private final LocalDate ngayBatDauHK2 = LocalDate.of(2025, 1, 13);
     private String maMHTG, tenMHTG; // Biến trung gian lưu thông tin môn học khi thiếu cột
 
-    public JsoupImpl() {}
+    public ReadHTMLServiceImpl() {}
 
     public void docFileHTML(String path) throws IOException {
         File file = new File(path);

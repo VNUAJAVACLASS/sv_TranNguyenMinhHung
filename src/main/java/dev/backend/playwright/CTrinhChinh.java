@@ -1,12 +1,14 @@
 package dev.backend.playwright;
 
-import dev.backend.playwright.jsoup.JsoupImpl;
+import dev.backend.playwright.service.Impl.ReadHTMLServiceImpl;
+import dev.backend.playwright.service.ReadHTMLService;
+
 import java.io.IOException;
 import java.util.*;
 
 public class CTrinhChinh {
     public static void main(String[] args) throws IOException {
-        JsoupImpl js = new JsoupImpl();
+        ReadHTMLService js = new ReadHTMLServiceImpl();
         js.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/html/tkb_TranNguyenMinhHung.html");
 //        js.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/html/tkb_HaNgocQuyen.html");
 

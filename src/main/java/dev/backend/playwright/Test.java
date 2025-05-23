@@ -1,6 +1,8 @@
 package dev.backend.playwright;
 
 import dev.backend.playwright.entities.NguoiDung;
+import dev.backend.playwright.service.Impl.ReadVnuaDataServiceImpl;
+import dev.backend.playwright.service.ReadVnuaDataService;
 
 import java.util.Scanner;
 
@@ -9,7 +11,7 @@ public class Test {
        NguoiDung nd = new NguoiDung();
        nd.nhap(sc);
 
-       DangNhapVNUA dn = new DangNhapVNUA(nd);
+       ReadVnuaDataService dn = new ReadVnuaDataServiceImpl(nd);
        dn.dangNhap();
        dn.layDuLieuLichHoc();
     }

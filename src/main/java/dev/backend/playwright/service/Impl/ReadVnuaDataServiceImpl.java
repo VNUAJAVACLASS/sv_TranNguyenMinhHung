@@ -1,25 +1,26 @@
-package dev.backend.playwright;
+package dev.backend.playwright.service.Impl;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import dev.backend.playwright.entities.NguoiDung;
+import dev.backend.playwright.service.ReadVnuaDataService;
 
-public class DangNhapVNUA {
+public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
     private static final String url = "https://daotao.vnua.edu.vn/#/home";
     private NguoiDung nd = new NguoiDung();
     private Playwright playwright;
     private Browser browser;
     private Page page;
 
-    public DangNhapVNUA(NguoiDung nd) {
+    public ReadVnuaDataServiceImpl(NguoiDung nd) {
         this.nd = nd;
     }
 
     public void dangNhap() {
         playwright = Playwright.create();
-        browser = playwright.firefox().launch(
+        browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(false)
         );
         page = browser.newPage();
