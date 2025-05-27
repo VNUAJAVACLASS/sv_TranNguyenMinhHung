@@ -9,7 +9,7 @@ import java.util.*;
 public class CTrinhChinh {
     public static void main(String[] args) throws IOException {
         ReadHTMLService js = new ReadHTMLServiceImpl();
-        js.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/html/tkb_TranNguyenMinhHung.html");
+        js.docFileHTML("src/main/resources/tkb_TranNguyenMinhHung.html");
 //        js.docFileHTML("D:/BTL_XayDung&PTPhanMem/Challenge/src/main/java/dev/backend/webbanthucung/html/tkb_HaNgocQuyen.html");
 
         //đọc thời khóa biểu giảng viên

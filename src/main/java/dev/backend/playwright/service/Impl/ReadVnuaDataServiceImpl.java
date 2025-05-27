@@ -4,7 +4,12 @@ import com.microsoft.playwright.*;
 import dev.backend.playwright.entities.NguoiDung;
 import dev.backend.playwright.service.ReadVnuaDataService;
 
-import javax.swing.text.Style;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
+
 import java.util.*;
 
 public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
@@ -14,6 +19,7 @@ public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
     private Browser browser;
     private Page page;
     private Map<Integer, String> mapHocKy = new HashMap<Integer, String>();
+    String htmlWrapper;
 
     public ReadVnuaDataServiceImpl() {
         nd = new NguoiDung();
@@ -24,6 +30,7 @@ public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
     }
 
     public void dangNhap() {
+        System.out.println("Loading.......");
         playwright = Playwright.create();
         browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(false)
@@ -104,7 +111,45 @@ public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
         //doi bang du lieu tai
         page.waitForSelector("table.table");
         page.waitForTimeout(5000);
+
+        String html = page.evaluate("document.querySelector('table.table')?.outerHTML").toString();
+        if(html != null) {
+            String htmlWrapper = """
+						    <!DOCTYPE html>
+						    <html>
+						    <head>
+						        <meta charset="UTF-8">
+						        <title>Thời khóa biểu</title>
+						    </head>
+						    <body>
+						""" + html + """
+						    </body>
+						    </html>
+						""";
+//            System.out.println(htmlWrapper);
+
+            try {
+                Path filePath = Paths.get("src/main/resources/tkb.html");
+                Files.createDirectories(filePath.getParent());
+                Files.writeString(filePath, htmlWrapper);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            System.out.println("Không có lịch học!");
+        }
     }
 
+    public void layNgayBatDauHocKy(){
+        if (page == null) {
+            System.out.println("Bạn cần đăng nhập trước khi truy cập thời khóa biểu!");
+            return;
+        }
 
+        // Click vào tab thời khóa biểu học kỳ
+        String tkb = "#WEB_TKB_1TUAN";
+        page.waitForSelector(tkb);
+        page.click(tkb);
+    }
 }

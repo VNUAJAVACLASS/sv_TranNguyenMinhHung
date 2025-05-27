@@ -5,6 +5,7 @@ import dev.backend.playwright.entities.Thu;
 import dev.backend.playwright.entities.TietHoc;
 import dev.backend.playwright.entities.Tuan;
 import dev.backend.playwright.service.ReadHTMLService;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -20,8 +21,56 @@ public class ReadHTMLServiceImpl implements ReadHTMLService {
     private Map<Integer, Tuan> dsTuan = new HashMap<>();
     private final LocalDate ngayBatDauHK2 = LocalDate.of(2025, 1, 13);
     private String maMHTG, tenMHTG; // Biến trung gian lưu thông tin môn học khi thiếu cột
+    private String html;
 
     public ReadHTMLServiceImpl() {}
+
+    public ReadHTMLServiceImpl(String html) {
+        this.html = html;
+    }
+
+    public void docFileHTML(){
+        Document doc = Jsoup.parse(html, "UTF-8");
+
+        Element table = doc.select("table").first();
+        //lấy từng dòng
+        Elements rows = table.select("tr");
+
+        for (Element row : rows) {
+            Elements cols = row.select("td");
+
+            if (cols.size() < 7) continue;
+
+            String maMH, tenMH;
+
+            //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biến tg
+            if (cols.size() < 11) {
+                maMH = this.maMHTG;
+                tenMH = this.tenMHTG;
+            } else {
+                maMH = cols.get(0).text();
+                tenMH = cols.get(1).text();
+                this.maMHTG = maMH;
+                this.tenMHTG = tenMH;
+            }
+
+            //lấy thông tin tương ứng
+            String thuStr = cols.get(cols.size() - 10).text();
+            String tiet = cols.get(cols.size() - 9).text();
+            int soTiet = Integer.parseInt(cols.get(cols.size() - 8).text());
+            String phong = cols.get(cols.size() - 7).text();
+            String tuanStr = cols.get(cols.size() - 5).text();
+
+
+            int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
+
+            TietHoc tietBatDau = TietHoc.fromTiet(tiet);
+
+            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
+
+            xuLyLichHoc(tuanStr, soThu, lich);
+        }
+    }
 
     public void docFileHTML(String path) throws IOException {
         File file = new File(path);
