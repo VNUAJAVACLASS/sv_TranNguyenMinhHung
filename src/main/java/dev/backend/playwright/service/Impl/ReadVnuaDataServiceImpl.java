@@ -1,18 +1,23 @@
 package dev.backend.playwright.service.Impl;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 import dev.backend.playwright.entities.NguoiDung;
 import dev.backend.playwright.service.ReadVnuaDataService;
 
+import javax.swing.text.Style;
+import java.util.*;
+
 public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
     private static final String url = "https://daotao.vnua.edu.vn/#/home";
-    private NguoiDung nd = new NguoiDung();
+    private NguoiDung nd;
     private Playwright playwright;
     private Browser browser;
     private Page page;
+    private Map<Integer, String> mapHocKy = new HashMap<Integer, String>();
+
+    public ReadVnuaDataServiceImpl() {
+        nd = new NguoiDung();
+    }
 
     public ReadVnuaDataServiceImpl(NguoiDung nd) {
         this.nd = nd;
@@ -39,17 +44,67 @@ public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
         //click vao nut dang nhap
         page.click("button:has-text('Đăng nhập')");
         page.waitForSelector("span.text-primary.text-justify");
-        page.waitForTimeout(10000);
+//        page.waitForTimeout(10000);
 
     }
 
     public void layDuLieuLichHoc() {
-        if(page == null){
+        if (page == null) {
             System.out.println("Bạn cần đăng nhập trước khi truy cập thời khóa biểu!");
             return;
         }
 
-        //Click vào thời khóa biểu dạng học kỳ
-        page.click("#WEB_TKB_HK");
+        // Click vào tab thời khóa biểu học kỳ
+        String tkb = "#WEB_TKB_HK";
+        page.waitForSelector(tkb);
+        page.click(tkb);
+
+        // Mở combobox chọn học kỳ
+        String combobox = "div[role='combobox']";
+        page.waitForSelector(combobox);
+        page.click(combobox);
+        page.waitForTimeout(10000);
+
+        List<String> dsHocKy = new ArrayList<>();
+
+        // Đợi các option hiển thị
+        page.waitForSelector("div.ng-option");
+
+        List<ElementHandle> options = page.querySelectorAll("div.ng-option");
+        for (ElementHandle option : options) {
+            String hocKyTxt = option.innerHTML().trim();
+            dsHocKy.add(hocKyTxt);
+        }
+
+        // Hiển thị danh sách học kỳ
+        System.out.println("Danh sách học kỳ:");
+        int stt = 1;
+        for (String hocKy : dsHocKy) {
+            String hk = hocKy.replace("<!---->", "").trim();
+            System.out.println(stt + ". " + hk);
+            mapHocKy.put(stt, hk);
+            stt++;
+        }
+
+        // Chọn học kỳ
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Nhập vào học kỳ muốn xem: ");
+        int chon = sc.nextInt();
+
+        if (chon <= 0 || chon > mapHocKy.size()) {
+            System.out.println("Dữ liệu nhập vào không hợp lệ!");
+            return;
+        }
+
+        // Click lại combobox
+        System.out.println("Đang mở lại combobox để chọn học kỳ...");
+        page.waitForSelector("div[role='option']:has-text('" + mapHocKy.get(chon) + "')");
+        page.click("div[role='option']:has-text('" + mapHocKy.get(chon) + "')");
+
+        //doi bang du lieu tai
+        page.waitForSelector("table.table");
+        page.waitForTimeout(5000);
     }
+
+
 }
