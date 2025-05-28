@@ -1,5 +1,7 @@
 package dev.backend.playwright;
 
+import static dev.backend.playwright.utils.StartDateReader.readStartDate;
+
 import dev.backend.playwright.entities.NguoiDung;
 import dev.backend.playwright.service.Impl.ReadHTMLServiceImpl;
 import dev.backend.playwright.service.Impl.ReadVnuaDataServiceImpl;
@@ -7,6 +9,7 @@ import dev.backend.playwright.service.ReadHTMLService;
 import dev.backend.playwright.service.ReadVnuaDataService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Test {
@@ -18,8 +21,10 @@ public class Test {
         ReadVnuaDataService dn = new ReadVnuaDataServiceImpl(nd);
         dn.runApp();
 
-        ReadHTMLService hr = new ReadHTMLServiceImpl();
         try {
+            LocalDate ngayBatDauHK = readStartDate("src/main/resources/start_date.txt");
+
+            ReadHTMLService hr = new ReadHTMLServiceImpl(ngayBatDauHK);
             hr.docFileHTML("src/main/resources/tkb.html");
             System.out.println("\n1. Lịch học hôm nay:");
             hr.hienThiLichHocHomNay();

@@ -1,10 +1,12 @@
 package dev.backend.playwright.service.Impl;
 
+
 import dev.backend.playwright.entities.LichHoc;
 import dev.backend.playwright.entities.Thu;
 import dev.backend.playwright.entities.TietHoc;
 import dev.backend.playwright.entities.Tuan;
 import dev.backend.playwright.service.ReadHTMLService;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,144 +21,110 @@ import java.util.*;
 
 public class ReadHTMLServiceImpl implements ReadHTMLService {
     private Map<Integer, Tuan> dsTuan = new HashMap<>();
-    private final LocalDate ngayBatDauHK2 = LocalDate.of(2025, 1, 13);
+    private static LocalDate ngayBatDauHK ;
     private String maMHTG, tenMHTG; // Biến trung gian lưu thông tin môn học khi thiếu cột
     private String html;
 
-    public ReadHTMLServiceImpl() {}
-
-    public ReadHTMLServiceImpl(String html) {
-        this.html = html;
+    public ReadHTMLServiceImpl() {
     }
 
-    public void docFileHTML(){
-        Document doc = Jsoup.parse(html, "UTF-8");
+    public ReadHTMLServiceImpl(LocalDate ngayBatDauHK) {
+        this.ngayBatDauHK = ngayBatDauHK;
+    }
 
-        Element table = doc.select("table").first();
-        //lấy từng dòng
-        Elements rows = table.select("tr");
+    public void docFileHTML(String path){
+        try {
+            File file = new File(path);
+            Document doc = Jsoup.parse(file, "UTF-8");
 
-        for (Element row : rows) {
-            Elements cols = row.select("td");
+            Element table = doc.select("table").first();
+            //lấy từng dòng
+            Elements rows = table.select("tr");
 
-            if (cols.size() < 7) continue;
+            for (Element row : rows) {
+                Elements cols = row.select("td");
 
-            String maMH, tenMH;
+                if (cols.size() < 7) continue;
 
-            //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biến tg
-            if (cols.size() < 11) {
-                maMH = this.maMHTG;
-                tenMH = this.tenMHTG;
-            } else {
-                maMH = cols.get(0).text();
-                tenMH = cols.get(1).text();
-                this.maMHTG = maMH;
-                this.tenMHTG = tenMH;
+                String maMH, tenMH;
+
+                //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biến tg
+                if (cols.size() < 11) {
+                    maMH = this.maMHTG;
+                    tenMH = this.tenMHTG;
+                } else {
+                    maMH = cols.get(0).text();
+                    tenMH = cols.get(1).text();
+                    this.maMHTG = maMH;
+                    this.tenMHTG = tenMH;
+                }
+
+                //lấy thông tin tương ứng
+                String thuStr = cols.get(cols.size() - 10).text();
+                String tiet = cols.get(cols.size() - 9).text();
+                int soTiet = Integer.parseInt(cols.get(cols.size() - 8).text());
+                String phong = cols.get(cols.size() - 7).text();
+                String tuanStr = cols.get(cols.size() - 5).text();
+
+
+                int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
+
+                TietHoc tietBatDau = TietHoc.fromTiet(tiet);
+
+                LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
+
+                xuLyLichHoc(tuanStr, soThu, lich);
             }
-
-            //lấy thông tin tương ứng
-            String thuStr = cols.get(cols.size() - 10).text();
-            String tiet = cols.get(cols.size() - 9).text();
-            int soTiet = Integer.parseInt(cols.get(cols.size() - 8).text());
-            String phong = cols.get(cols.size() - 7).text();
-            String tuanStr = cols.get(cols.size() - 5).text();
-
-
-            int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
-
-            TietHoc tietBatDau = TietHoc.fromTiet(tiet);
-
-            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
-
-            xuLyLichHoc(tuanStr, soThu, lich);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void docFileHTML(String path) throws IOException {
-        File file = new File(path);
-        Document doc = org.jsoup.Jsoup.parse(file, "UTF-8");
+    public void docFileHTMLGV(String path) {
+        try {
+            File file = new File(path);
+            Document doc = Jsoup.parse(file, "UTF-8");
 
-        Element table = doc.select("table").first();
-        //lấy từng dòng
-        Elements rows = table.select("tr");
+            Element table = doc.select("table").first();
+            Elements rows = table.select("tr");
 
-        for (Element row : rows) {
-            Elements cols = row.select("td");
+            //lấy từng dòng
+            for (Element row : rows) {
+                Elements cols = row.select("td");
 
-            if (cols.size() < 7) continue;
+                if (cols.size() < 7) continue;
 
-            String maMH, tenMH;
+                String maMH, tenMH;
 
-            //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biến tg
-            if (cols.size() < 11) {
-                maMH = this.maMHTG;
-                tenMH = this.tenMHTG;
-            } else {
-                maMH = cols.get(0).text();
-                tenMH = cols.get(1).text();
-                this.maMHTG = maMH;
-                this.tenMHTG = tenMH;
+                //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biết tg
+                if (cols.size() < 11) {
+                    maMH = this.maMHTG;
+                    tenMH = this.tenMHTG;
+                } else {
+                    maMH = cols.get(0).text();
+                    tenMH = cols.get(1).text();
+                    this.maMHTG = maMH;
+                    this.tenMHTG = tenMH;
+                }
+
+                //lấy thông tin tương ứng
+                String thuStr = cols.get(cols.size() - 12).text();
+                String tiet = cols.get(cols.size() - 11).text();
+                int soTiet = Integer.parseInt(cols.get(cols.size() - 10).text());
+                String phong = cols.get(cols.size() - 9).text();
+                String tuanStr = cols.get(cols.size() - 6).text();
+
+                if(thuStr == "") continue;
+                int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
+
+                TietHoc tietBatDau = TietHoc.fromTiet(tiet);
+
+                LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
+
+                xuLyLichHoc(tuanStr, soThu, lich);
             }
-
-            //lấy thông tin tương ứng
-            String thuStr = cols.get(cols.size() - 10).text();
-            String tiet = cols.get(cols.size() - 9).text();
-            int soTiet = Integer.parseInt(cols.get(cols.size() - 8).text());
-            String phong = cols.get(cols.size() - 7).text();
-            String tuanStr = cols.get(cols.size() - 5).text();
-
-
-            int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
-
-            TietHoc tietBatDau = TietHoc.fromTiet(tiet);
-
-            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
-
-            xuLyLichHoc(tuanStr, soThu, lich);
-        }
-    }
-
-    public void docFileHTMLGV(String path) throws IOException {
-        File file = new File(path);
-        Document doc = org.jsoup.Jsoup.parse(file, "UTF-8");
-
-        Element table = doc.select("table").first();
-        Elements rows = table.select("tr");
-
-        //lấy từng dòng
-        for (Element row : rows) {
-            Elements cols = row.select("td");
-
-            if (cols.size() < 7) continue;
-
-            String maMH, tenMH;
-
-            //Nếu dòng thiếu thông tin mã, tên môn thì lưu vào biết tg
-            if (cols.size() < 11) {
-                maMH = this.maMHTG;
-                tenMH = this.tenMHTG;
-            } else {
-                maMH = cols.get(0).text();
-                tenMH = cols.get(1).text();
-                this.maMHTG = maMH;
-                this.tenMHTG = tenMH;
-            }
-
-            //lấy thông tin tương ứng
-            String thuStr = cols.get(cols.size() - 12).text();
-            String tiet = cols.get(cols.size() - 11).text();
-            int soTiet = Integer.parseInt(cols.get(cols.size() - 10).text());
-            String phong = cols.get(cols.size() - 9).text();
-            String tuanStr = cols.get(cols.size() - 6).text();
-
-            if(thuStr == "") continue;
-            int soThu = thuStr.equalsIgnoreCase("CN") ? 8 : Integer.parseInt(thuStr);
-
-            TietHoc tietBatDau = TietHoc.fromTiet(tiet);
-
-            LichHoc lich = new LichHoc(maMH, tenMH, null, tietBatDau, soTiet, phong);
-
-            xuLyLichHoc(tuanStr, soThu, lich);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -271,47 +239,51 @@ public class ReadHTMLServiceImpl implements ReadHTMLService {
     }
 
     public void hienThiLichHocHomNay() {
-        LocalDate homNay = LocalDate.now();
+        try {
+            LocalDate homNay = LocalDate.now();
 
-        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK2, homNay);
+            long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK, homNay);
 
-        if (soNgay < 0) {
-            System.out.println("Kỳ học này chưa bắt đầu");
-            return;
-        }
+            if (soNgay < 0) {
+                System.out.println("Kỳ học này chưa bắt đầu");
+                return;
+            }
 
-        int soTuanHienTai = (int) (soNgay / 7) + 1;
-        int soThuTrongTuan = homNay.getDayOfWeek().getValue();
-        int soThu = (soThuTrongTuan == 7) ? 8 : soThuTrongTuan + 1;
+            int soTuanHienTai = (int) (soNgay / 7) + 1;
+            int soThuTrongTuan = homNay.getDayOfWeek().getValue();
+            int soThu = (soThuTrongTuan == 7) ? 8 : soThuTrongTuan + 1;
 
-        System.out.println("Hôm nay là: " + homNay + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
+            System.out.println("Hôm nay là: " + homNay + " (Tuần " + soTuanHienTai + ", Thứ " + (soThu == 8 ? "CN" : soThu) + ")");
 
-        // Sử dụng get() để truy cập trực tiếp tuần hiện tại
-        Tuan tuanHienTai = dsTuan.get(soTuanHienTai);
+            // Sử dụng get() để truy cập trực tiếp tuần hiện tại
+            Tuan tuanHienTai = dsTuan.get(soTuanHienTai);
 
-        if (tuanHienTai == null) {
-            System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuanHienTai);
-            return;
-        }
+            if (tuanHienTai == null) {
+                System.out.println("Không có dữ liệu thời khóa biểu cho tuần " + soTuanHienTai);
+                return;
+            }
 
-        // Tìm thứ trong tuần hiện tại
-        Optional<Thu> optionalThu = tuanHienTai.getDsThu().stream()
-                .filter(thu -> thu.getThu() == soThu)
-                .findFirst();
+            // Tìm thứ trong tuần hiện tại
+            Optional<Thu> optionalThu = tuanHienTai.getDsThu().stream()
+                    .filter(thu -> thu.getThu() == soThu)
+                    .findFirst();
 
-        if (optionalThu.isEmpty()) {
-            System.out.println("Không có lịch học vào hôm nay.");
-            return;
-        }
+            if (optionalThu.isEmpty()) {
+                System.out.println("Không có lịch học vào hôm nay.");
+                return;
+            }
 
-        Thu thuHomNay = optionalThu.get();
-        List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
+            Thu thuHomNay = optionalThu.get();
+            List<LichHoc> dsLich = new ArrayList<>(thuHomNay.getDsLichHoc());
 
-        for (LichHoc lich : dsLich) {
-            int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
-            int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
-            System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
-                    "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
+            for (LichHoc lich : dsLich) {
+                int tietBatDau = Integer.parseInt(lich.getTietBatDau().getTiet());
+                int tietKetThuc = tietBatDau + lich.getSoTiet() - 1;
+                System.out.println(" - " + lich.getTenMH() + " (" + lich.getMaMH() +
+                        "), Tiết " + tietBatDau + " -> " + tietKetThuc + ", Phòng: " + lich.getPhong());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Không có lịch học hôm nay!");
         }
     }
 
@@ -324,7 +296,9 @@ public class ReadHTMLServiceImpl implements ReadHTMLService {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate ngayNhap = LocalDate.parse(ngay, dtf);
 
-        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK2,ngayNhap);
+        long soNgay = ChronoUnit.DAYS.between(ngayBatDauHK,ngayNhap);
+
+        System.out.println("Ngay bat dau " + ngayBatDauHK + " -> " + ngayNhap);
 
         if (soNgay < 0) {
             System.out.println("Kỳ học này chưa bắt đầu");
@@ -366,4 +340,8 @@ public class ReadHTMLServiceImpl implements ReadHTMLService {
         }
     }
 
+    @Override
+    public String toString() {
+        return ngayBatDauHK + "";
+    }
 }
