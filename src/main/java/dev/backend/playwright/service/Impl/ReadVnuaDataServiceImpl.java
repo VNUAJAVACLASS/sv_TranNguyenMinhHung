@@ -30,7 +30,7 @@ public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
     }
 
     public void dangNhap() {
-        System.out.println("Loading.......");
+        System.out.println("\nLoading.......");
         playwright = Playwright.create();
         browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(false)
@@ -152,4 +152,22 @@ public class ReadVnuaDataServiceImpl implements ReadVnuaDataService {
         page.waitForSelector(tkb);
         page.click(tkb);
     }
+
+    public void runApp() {
+        try {
+            dangNhap();
+
+            layDuLieuLichHoc();
+
+            layNgayBatDauHocKy();
+        } catch (Exception e) {
+            System.out.println("Đã xảy ra lỗi: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (page != null) page.close();
+            if (browser != null) browser.close();
+            if (playwright != null) playwright.close();
+        }
+    }
+
 }

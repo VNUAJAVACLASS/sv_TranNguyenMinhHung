@@ -16,8 +16,7 @@ public class Test {
         nd.nhap(sc);
 
         ReadVnuaDataService dn = new ReadVnuaDataServiceImpl(nd);
-        dn.dangNhap();
-        dn.layDuLieuLichHoc();
+        dn.runApp();
 
         ReadHTMLService hr = new ReadHTMLServiceImpl();
         try {
