@@ -2,6 +2,8 @@ package dev.backend.tinchi_db.dao;
 
 import dev.backend.tinchi_db.entities.Subject;
 
+import static dev.backend.tinchi_db.Connection.AccessConnection.getConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +12,7 @@ public class SubjectDAO {
     Connection conn;
 
     public SubjectDAO() {
-        try {
-            String url = "jdbc:ucanaccess://lib/baitoantinchi.accdb";
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        conn = getConnection();
     }
 
     //lấy danh sách môn học

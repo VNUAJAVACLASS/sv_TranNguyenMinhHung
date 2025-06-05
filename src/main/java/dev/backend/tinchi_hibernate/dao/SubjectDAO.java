@@ -1,6 +1,9 @@
 package dev.backend.tinchi_hibernate.dao;
 
 import dev.backend.tinchi_hibernate.entities.Subject;
+import dev.backend.tinchi_hibernate.util.CreditHibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -142,5 +145,30 @@ public class SubjectDAO {
         }
 
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Subject> getSubjects() {
+        Transaction transaction = null;
+        List<Subject> listOfSubject = null;
+
+        try (Session session = CreditHibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            listOfSubject = session.createQuery("from Subject").list();
+
+            transaction.commit();
+        }catch (Exception e) {
+            if(transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+        return listOfSubject;
+    }
+
+    public static void main(String[] args) {
+        List<Subject> subjects = getSubjects();
+        subjects.forEach(sub -> System.out.println(sub));
     }
 }

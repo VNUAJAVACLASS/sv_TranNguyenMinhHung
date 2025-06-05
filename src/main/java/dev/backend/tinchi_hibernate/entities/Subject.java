@@ -2,10 +2,12 @@ package dev.backend.tinchi_hibernate.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.Scanner;
 
 @Entity
+@Table(name = "tbl_subject")
 public class Subject {
     @Id
     private String subjectCode;

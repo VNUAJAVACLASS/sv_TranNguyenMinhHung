@@ -1,8 +1,15 @@
 package dev.backend.tinchi_hibernate.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.util.Scanner;
 
+@Entity
+@Table(name = "tbl_users")
 public class Lecturer extends Human {
+    @Column(name = "password")
     private String password;
 
     public Lecturer() {

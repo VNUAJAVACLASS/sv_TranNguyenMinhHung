@@ -1,5 +1,7 @@
 package dev.backend.tinchi_db.dao;
 
+import static dev.backend.tinchi_db.Connection.AccessConnection.getConnection;
+
 import dev.backend.tinchi_db.entities.Human;
 import dev.backend.tinchi_db.entities.Lecturer;
 import dev.backend.tinchi_db.entities.Student;
@@ -15,12 +17,7 @@ public class UserDAO {
     private Connection conn;
 
     public UserDAO() {
-        try {
-            String url = "jdbc:ucanaccess://lib/baitoantinchi.accdb";
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        conn = getConnection();
     }
 
     //lấy danh sách tất cả nhân sự

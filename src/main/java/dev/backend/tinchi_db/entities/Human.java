@@ -2,7 +2,7 @@ package dev.backend.tinchi_db.entities;
 
 import java.util.Scanner;
 
-public class Human {
+public abstract class Human {
     //Khai bao cac thuoc tinh
     protected String code;
     protected String fullname;
