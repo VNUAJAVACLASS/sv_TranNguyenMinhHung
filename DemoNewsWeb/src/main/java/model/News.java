@@ -11,7 +11,13 @@ public class News {
 		this.content = content;
 	}
 
-	
+	public News(String title, String content) {
+		this.title = title;
+		this.content = content;
+	}
+
+
+
 	//getter va setter
 	public int getId() {
 		return id;
