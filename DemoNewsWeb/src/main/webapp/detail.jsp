@@ -2,19 +2,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Chi tiết tin tức</title>
+<title>Chi tiết sách</title>
 </head>
 <body>
-	<!-- Truy cập đối tượng News được ghi vào request scope theo tên "news"
-để hiển thị thông tin
--->
-	<h2>${news.title}</h2>
-	<p>${news.content}</p>
-	<br>
-	<!-- Với ứng dụng phức tạp nên gọi servlet theo dạng
-${pageContext.request.contextPath}/<alias của servlet>
-để đảm bảo đường dẫn luôn chính xác -->
-	<a href="${pageContext.request.contextPath}/news">Quay lại danh
-		sách</a>
+    <!-- Truy cập đối tượng Book được servlet ghi vào request scope theo tên "book" -->
+    <h2>${book.title}</h2>
+    <p><strong>Tác giả:</strong> ${book.author}</p>
+    <p><strong>Giá:</strong> ${book.price} VNĐ</p>
+    <p>
+        <img src="${book.imagePath}" alt="${book.title}" width="150" height="200"/>
+    </p>
+    <br>
+    <!-- Quay lại danh sách sách -->
+    <a href="${pageContext.request.contextPath}/book">Quay lại danh sách</a>
 </body>
 </html>

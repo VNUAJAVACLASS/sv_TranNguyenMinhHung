@@ -8,11 +8,11 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	<servlet>
-		<servlet-name>NewsServlet</servlet-name>
-		<servlet-class>controller.NewsServlet</servlet-class>
+		<servlet-name>BookServlet</servlet-name>
+		<servlet-class>controller.BookServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>NewsServlet</servlet-name>
-		<url-pattern>/news</url-pattern>
+		<servlet-name>BookServlet</servlet-name>
+		<url-pattern>/books</url-pattern>
 	</servlet-mapping>
 </web-app>
