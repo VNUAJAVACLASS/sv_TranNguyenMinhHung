@@ -1,29 +1,17 @@
 package controller;
 
 import model.Book;
+import services.BookService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 // Servlet được gọi đến với tên liên kết "book" theo web.xml
 public class BookServlet extends HttpServlet {
 
-    // Danh sách sách fix cứng
-    private static List<Book> bookList = new ArrayList<>();
-
-    // Biến đếm id tự tăng
-    private static int idCounter = 1;
-
-    @Override
-    public void init() throws ServletException {
-        // Chỉ khởi tạo dữ liệu 1 lần khi servlet chạy
-        if (bookList.isEmpty()) {
-            bookList.add(new Book(idCounter++, "Lập trình Java", "Nguyễn Văn A", 120000));
-            bookList.add(new Book(idCounter++, "Spring Boot Cơ bản", "Trần Văn B", 150000));
-        }
-    }
+    private BookService bookService = new BookService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,24 +29,31 @@ public class BookServlet extends HttpServlet {
                 req.getRequestDispatcher("book-form.jsp").forward(req, resp);
                 break;
             case "edit":
-                int idEdit = Integer.parseInt(idStr);
-                Book editBook = findById(idEdit);
-                req.setAttribute("book", editBook);
+                if (idStr != null) {
+                    int idEdit = Integer.parseInt(idStr);
+                    Book editBook = bookService.findById(idEdit);
+                    req.setAttribute("book", editBook);
+                }
                 req.getRequestDispatcher("book-form.jsp").forward(req, resp);
                 break;
             case "delete":
-                int idDelete = Integer.parseInt(idStr);
-                bookList.removeIf(b -> b.getBookId() == idDelete);
+                if (idStr != null) {
+                    int idDelete = Integer.parseInt(idStr);
+                    bookService.deleteBook(idDelete);
+                }
                 resp.sendRedirect("book");
                 break;
             case "detail":
-                int idDetail = Integer.parseInt(idStr);
-                Book detailBook = findById(idDetail);
-                req.setAttribute("book", detailBook);
+                if (idStr != null) {
+                    int idDetail = Integer.parseInt(idStr);
+                    Book detailBook = bookService.findById(idDetail);
+                    req.setAttribute("book", detailBook);
+                }
                 req.getRequestDispatcher("book-detail.jsp").forward(req, resp);
                 break;
             default: // list
-                req.setAttribute("bookList", bookList);
+                List<Book> books = bookService.getAllBooks();
+                req.setAttribute("bookList", books);
                 req.getRequestDispatcher("book-list.jsp").forward(req, resp);
                 break;
         }
@@ -79,26 +74,14 @@ public class BookServlet extends HttpServlet {
 
         if (idStr == null || idStr.isEmpty()) {
             // thêm mới
-            bookList.add(new Book(idCounter++, title, author, price, imagePath));
+            bookService.addBook(new Book(0, title, author, price, imagePath));
         } else {
             // cập nhật
             int id = Integer.parseInt(idStr);
-            Book existing = findById(id);
-            if (existing != null) {
-                existing.setTitle(title);
-                existing.setAuthor(author);
-                existing.setPrice(price);
-                existing.setImgPath(imagePath);
-            }
+            Book existing = new Book(id, title, author, price, imagePath);
+            bookService.updateBook(existing);
         }
 
         resp.sendRedirect("book");
-    }
-
-    private Book findById(int id) {
-        for (Book b : bookList) {
-            if (b.getBookId() == id) return b;
-        }
-        return null;
     }
 }

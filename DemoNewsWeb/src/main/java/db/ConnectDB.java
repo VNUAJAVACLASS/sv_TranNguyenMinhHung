@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectDB {
-	private static final String URL = "jdbc:mysql://3.26.114.48:3306/tintuc?useSSL=false&serverTimezone=UTC&characterEncoding=utf8";
-	private static final String USER = "lamdeptrai";
-	private static final String PASSWORD = "123456!";
+	private static final String URL = "jdbc:mysql://localhost:3306/book_mh?useSSL=false&serverTimezone=UTC&characterEncoding=utf8";
+	private static final String USER = "root";
+	private static final String PASSWORD = "root!";
 	static {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
