@@ -29,7 +29,7 @@
         <input type="number" step="0.01" name="price" value="${book.price}" required><br><br>
 
         Ảnh bìa (URL hoặc đường dẫn): <br>
-        <input type="text" name="imagePath" value="${book.imagePath}" required><br><br>
+        <input type="text" name="imgPath" value="${book.imgPath}" required><br><br>
 
         <input type="submit" value="${isEdit ? 'Cập nhật' : 'Thêm mới'}">
     </form>

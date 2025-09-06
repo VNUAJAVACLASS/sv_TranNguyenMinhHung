@@ -10,7 +10,7 @@
     <p><strong>Tác giả:</strong> ${book.author}</p>
     <p><strong>Giá:</strong> ${book.price} VNĐ</p>
     <p>
-        <img src="${book.imagePath}" alt="${book.title}" width="150" height="200"/>
+        <img src="${book.imgPath}" alt="${book.title}" width="150" height="200"/>
     </p>
     <br>
     <!-- Quay lại danh sách sách -->
