@@ -15,7 +15,7 @@ public class BookDAO {
 
     // Lấy tất cả sách
     public List<Book> getAllBooks() {
-        String sql = "SELECT bookId, title, author, price, imagePath FROM books ORDER BY bookId DESC";
+        String sql = "SELECT bookId, title, author, price, imgPath FROM books ORDER BY bookId DESC";
         List<Book> list = new ArrayList<>();
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -26,7 +26,7 @@ public class BookDAO {
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getFloat("price"),
-                        rs.getString("imagePath")
+                        rs.getString("imgPath")
                 ));
             }
         } catch (SQLException e) {
@@ -37,7 +37,7 @@ public class BookDAO {
 
     // Tìm sách theo ID
     public Book findById(int id) {
-        String sql = "SELECT bookId, title, author, price, imagePath FROM books WHERE bookId = ?";
+        String sql = "SELECT bookId, title, author, price, imgPath FROM books WHERE bookId = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -48,7 +48,7 @@ public class BookDAO {
                             rs.getString("title"),
                             rs.getString("author"),
                             rs.getFloat("price"),
-                            rs.getString("imagePath")
+                            rs.getString("imgPath")
                     );
                 }
             }
@@ -60,7 +60,7 @@ public class BookDAO {
 
     // Thêm sách mới
     public boolean addBook(Book book) {
-        String sql = "INSERT INTO books (title, author, price, imagePath) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO books (title, author, price, imgPath) VALUES (?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, book.getTitle());
@@ -81,7 +81,7 @@ public class BookDAO {
 
     // Cập nhật sách
     public boolean update(Book book) {
-        String sql = "UPDATE books SET title = ?, author = ?, price = ?, imagePath = ? WHERE bookId = ?";
+        String sql = "UPDATE books SET title = ?, author = ?, price = ?, imgPath = ? WHERE bookId = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, book.getTitle());
